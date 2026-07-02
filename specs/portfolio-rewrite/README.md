@@ -1,6 +1,6 @@
 ---
 title: "Portfolio Rewrite"
-status: in-progress
+status: completed
 date: 2026-07-02
 priority: 10
 ---
@@ -46,9 +46,9 @@ See [research.md](research.md) for full options analysis.
 
 See [implementation-plan.md](implementation-plan.md) for detailed task breakdown.
 
-- [ ] Phase 0: Spike — scaffold, agent-world embed, ONE kling hero video end-to-end
-- [ ] Phase 1: Foundation — tokens, themes, fonts, content layer, layout shell
-- [ ] Phase 2: Home page — hero, proof bar, selected work, services, contact
-- [ ] Phase 3: Case studies — template, 6+ project MDX pages, archive, video heroes
-- [ ] Phase 4: Polish — motion, SEO/JSON-LD/OG, Lighthouse ≥95, dual-theme Playwright pass
-- [ ] Phase 5: Deploy + domain cutover + docs
+- [x] Phase 0: Spike — scaffold, agent-world embed, ONE kling hero video end-to-end
+- [x] Phase 1: Foundation — tokens, themes, fonts, content layer, layout shell
+- [x] Phase 2: Home page — hero, proof bar, selected work, services, contact
+- [x] Phase 3: Case studies — template, 6+ project MDX pages, archive, video heroes
+- [x] Phase 4: Polish — motion, SEO/JSON-LD/OG, Lighthouse ≥95, dual-theme Playwright pass
+- [x] Phase 5: Deploy + domain cutover + docs

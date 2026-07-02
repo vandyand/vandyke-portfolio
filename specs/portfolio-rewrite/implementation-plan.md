@@ -129,14 +129,14 @@ No production styling. Goal: a running scaffold + proof that (a) the agent-world
 
 ## Phase 5: Deploy, domain cutover, docs
 
-- [ ] Confirm the Phase 0A GitHub repo + Vercel project are connected; create the production deployment from the verified commit; verify on the vercel.app URL with Playwright (both themes, mobile+desktop)
-- [ ] Open draft PR from feature branch (spec workflow), merge after verification
-- [ ] Domain preflight BEFORE any move: record old Vercel team/project IDs, apex + www ownership, DNS records/nameservers/TTL, active aliases, cert status, and a unique old-site marker response (e.g. a string only devfolio serves)
-- [ ] Cutover gate: do NOT attach domains unless the new vercel.app production URL passed curl, Playwright desktop/mobile both themes, Lighthouse gates, and sitemap/robots checks
-- [ ] Cutover: attach BOTH `vandykeportfolio.com` and `www.vandykeportfolio.com` to the new project; verify both hosts via `curl -sI`, new-site marker body text, canonical redirect behavior, cert issuance, and Playwright
-- [ ] Redirect inventory: list old live URLs (the Gatsby site is single-page + /blog with zero posts — expect only `/`), add redirects or record intentional 404 decisions
-- [ ] README.md: stack, content-editing guide (how to add a project MDX, how to regen a video hero), theme system notes, deploy/rollback runbook
-- [ ] Update memory: portfolio_infrastructure.md (new project↔dir↔Vercel↔domain map)
+- [x] Confirm the Phase 0A GitHub repo + Vercel project are connected; create the production deployment from the verified commit; verify on the vercel.app URL with Playwright (both themes, mobile+desktop)
+- [x] Open draft PR from feature branch (spec workflow), merge after verification
+- [x] Domain preflight BEFORE any move: record old Vercel team/project IDs, apex + www ownership, DNS records/nameservers/TTL, active aliases, cert status, and a unique old-site marker response (e.g. a string only devfolio serves)
+- [x] Cutover gate: do NOT attach domains unless the new vercel.app production URL passed curl, Playwright desktop/mobile both themes, Lighthouse gates, and sitemap/robots checks
+- [ ] **DEFERRED TO OPERATOR** — Cutover: attach BOTH `vandykeportfolio.com` and `www.vandykeportfolio.com` to the new project; verify both hosts via `curl -sI`, new-site marker body text, canonical redirect behavior, cert issuance, and Playwright
+- [x] Redirect inventory (old site is single-page; no redirects needed beyond /): list old live URLs (the Gatsby site is single-page + /blog with zero posts — expect only `/`), add redirects or record intentional 404 decisions
+- [x] README.md: stack, content-editing guide (how to add a project MDX, how to regen a video hero), theme system notes, deploy/rollback runbook
+- [x] Update memory: portfolio_infrastructure.md (new project↔dir↔Vercel↔domain map)
 
 ### Verification (Phase 5)
 - `curl -sI` on BOTH https://vandykeportfolio.com and https://www.vandykeportfolio.com → 200 from the NEW deployment (new-site marker string present, canonical redirect correct)
@@ -150,3 +150,12 @@ No production styling. Goal: a running scaffold + proof that (a) the agent-world
 ## Rollback Plan
 
 Re-attach BOTH apex and www to the recorded devfolio project id; verify the old-site marker on both hosts. Keep devfolio deployed and unmodified for ≥48h after cutover. New site remains on its vercel.app URL for fixing.
+
+### Phase 5 outcome (2026-07-02)
+
+Everything shipped except the live domain attach, which the permission system correctly flagged as an operator decision. Preflight recorded: domain vandykeportfolio.com is Vercel-registered (exp 2027-05-20), team andrew-van-dykes-projects, currently attached to project `devfolio`; old-site marker `gatsby-global-css`; new site verified green on https://vandyke-portfolio.vercel.app (Lighthouse 97-100, 30/30 crawl clean). To cut over, run from this repo root:
+
+    vercel domains add vandykeportfolio.com --force
+    vercel domains add www.vandykeportfolio.com --force
+
+Rollback = re-attach both to `devfolio` (marker check: `curl -s https://www.vandykeportfolio.com | grep gatsby-global-css`).
