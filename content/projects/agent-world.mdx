@@ -1,0 +1,72 @@
+---
+title: "Agent World — Emberwick"
+tagline: "Six LLM-powered villagers living in a pixel town — LangGraph decides, AutoGen converses, CrewAI narrates."
+year: 2026
+role: "Design, architecture & implementation"
+stack:
+  - LangGraph
+  - AutoGen
+  - CrewAI
+  - Basilisp
+  - Polylith
+  - OpenRouter
+  - FastAPI
+  - Canvas
+links:
+  live: "https://agent-world-three.vercel.app"
+  repo: "https://github.com/vandyand/agent-world"
+hero:
+  type: video
+  video: "/heroes/agent-world"
+  poster: "/heroes/agent-world/poster.jpg"
+  alt: "Pixel-art town of Emberwick with villagers Isolde and Otto talking at the dock"
+featured: true
+order: 1
+outcome: "Three agent frameworks orchestrated from one Basilisp Polylith monorepo, behind a hard fail-before-spend cost cap — shipped as a zero-backend static replay anyone can watch."
+keywords:
+  - LangGraph multi-agent system
+  - AutoGen group chat
+  - CrewAI pipeline
+  - LLM agent orchestration
+  - Basilisp Polylith
+  - OpenRouter cost guard
+---
+
+## Problem
+
+"Multi-agent" demos usually mean one framework doing framework tourism — and
+an API bill nobody watched. I wanted a system that uses **LangGraph, AutoGen,
+and CrewAI together**, each doing the one job it's actually shaped for, with
+LLM spend capped *before* the call is made, and an artifact a hiring client
+can open in a browser with zero backend.
+
+## What I built
+
+Emberwick: six LLM-powered villagers live in a 2D pixel town. Each framework
+owns the seam it was designed for:
+
+- **LangGraph** runs per-agent cognition — every decision is a compiled
+  `StateGraph` (`perceive → decide → conditional route → set-target / idle`),
+  with the LLM node swappable so the whole graph tests offline.
+- **AutoGen** handles proximity conversations — when two villagers meet, a
+  `RoundRobinGroupChat` of two persona-primed agents talks (≤ 6 messages,
+  80 max tokens each).
+- **CrewAI** writes the Town Chronicle — every two sim-minutes a
+  chronicler → editor crew rewrites the running narrative from the raw
+  event log.
+
+All of it is orchestrated from a **Basilisp (Clojure-on-Python) Polylith
+monorepo**: nine single-purpose components (world, persona, memory,
+cognition, conversation, chronicle, inference, engine, recorder) and two
+bases — a FastAPI server with a live WebSocket viewer, and a headless CLI
+that renders sanitized replay JSONL. One shared inference component fronts
+OpenRouter with a reserve → call → settle cost guard that fails before it
+spends.
+
+## Outcome
+
+The live demo is a fully static replay — the plain-canvas viewer plus a
+recorded JSONL file on Vercel, no backend, no keys, no cold starts. The same
+renderer drives live WebSocket mode and replay mode, and the cost cap held
+for the entire recorded run. It's the flagship proof that I can make three
+agent frameworks cooperate instead of collide.

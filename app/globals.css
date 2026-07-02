@@ -1,0 +1,213 @@
+@import "tailwindcss";
+
+/* ────────────────────────────────────────────────────────────────
+   Design tokens — dark-first.
+   Dark: deep warm charcoal (never pure black), warm ivory ink,
+   one saturated ember accent (echoes "Emberwick").
+   Light: warm paper white, same ember darkened for contrast.
+   ──────────────────────────────────────────────────────────────── */
+
+:root {
+  color-scheme: dark;
+
+  /* surfaces */
+  --bg: #16120e;
+  --surface: #1e1913;
+  --surface-2: #282019;
+
+  /* ink */
+  --ink: #ece5da;
+  --ink-muted: #a89f92;
+  /* ≥4.5:1 on bg, surface AND surface-2 (WCAG AA small text) */
+  --ink-faint: #93897b;
+
+  /* borders */
+  --line: #2e2820;
+  --line-strong: #423a2e;
+
+  /* the one accent — ember */
+  --accent: #f59e0b;
+  --accent-strong: #fbbf24;
+  --accent-ink: #1c1508;
+  --accent-soft: rgb(245 158 11 / 0.12);
+
+  --shadow-card-value: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -8px rgb(0 0 0 / 0.4);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #faf6ef;
+  --surface: #f2ecdf;
+  --surface-2: #eae2d1;
+
+  --ink: #221c14;
+  --ink-muted: #675e50;
+  /* ≥4.5:1 on bg and surface (WCAG AA small text) */
+  --ink-faint: #6f6557;
+
+  --line: #e4dbc9;
+  --line-strong: #cfc3ab;
+
+  --accent: #b45309;
+  --accent-strong: #92400e;
+  --accent-ink: #fffbeb;
+  --accent-soft: rgb(180 83 9 / 0.1);
+
+  --shadow-card-value: 0 1px 2px rgb(34 28 20 / 0.06), 0 8px 24px -8px rgb(34 28 20 / 0.12);
+}
+
+/* No-JS / pre-hydration fallback: honor the system preference when the
+   inline theme script hasn't set data-theme. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    color-scheme: light;
+
+    --bg: #faf6ef;
+    --surface: #f2ecdf;
+    --surface-2: #eae2d1;
+
+    --ink: #221c14;
+    --ink-muted: #675e50;
+    --ink-faint: #6f6557;
+
+    --line: #e4dbc9;
+    --line-strong: #cfc3ab;
+
+    --accent: #b45309;
+    --accent-strong: #92400e;
+    --accent-ink: #fffbeb;
+    --accent-soft: rgb(180 83 9 / 0.1);
+
+    --shadow-card-value: 0 1px 2px rgb(34 28 20 / 0.06), 0 8px 24px -8px rgb(34 28 20 / 0.12);
+  }
+}
+
+@theme inline {
+  /* colors → bg-bg, bg-surface, text-ink, border-line, text-accent … */
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* type — display serif / body sans / mono labels */
+  --font-display: var(--font-newsreader), "Newsreader", Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "JetBrains Mono",
+    monospace;
+
+  --shadow-card: var(--shadow-card-value);
+}
+
+@theme {
+  /* type scale additions → text-display, text-display-sm, text-kicker */
+  --text-display: clamp(2.75rem, 1.4rem + 5.2vw, 5rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.025em;
+  --text-display-sm: clamp(1.875rem, 1.2rem + 2.4vw, 2.75rem);
+  --text-display-sm--line-height: 1.1;
+  --text-display-sm--letter-spacing: -0.02em;
+  --text-kicker: 0.8125rem;
+  --text-kicker--line-height: 1.4;
+  --text-kicker--letter-spacing: 0.14em;
+
+  /* radii → rounded-card, rounded-chip */
+  --radius-card: 0.875rem;
+  --radius-chip: 0.4375rem;
+}
+
+/* ── base ─────────────────────────────────────────────────────── */
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Theme-toggle icon swap (works pre-hydration, no JS state needed) */
+[data-theme="light"] .icon-when-dark {
+  display: none;
+}
+:root:not([data-theme="light"]) .icon-when-light {
+  display: none;
+}
+
+/* ── Motion (restrained — the hero embed is the one novelty) ──── */
+
+/* Section-entry reveal: pure CSS scroll-driven animation, no JS.
+   Double-gated: only runs when the browser supports scroll-driven
+   animations AND the visitor allows motion. Everywhere else the
+   element is simply visible — zero layout or a11y cost. */
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      /* Finish early in the entry so text is readable immediately. */
+      animation-range: entry 0% entry 50%;
+    }
+  }
+}
+
+/* Hover micro-interaction: gentle lift + soft shadow on cards/chips.
+   Transform-only (no layout), and off under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .lift {
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-value);
+  }
+}
+
+/* View Transitions: quick whole-page cross-fade between routes
+   (enabled via Next's experimental `viewTransition` flag). Reduced
+   motion turns it off entirely. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 180ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

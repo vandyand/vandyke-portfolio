@@ -1,0 +1,60 @@
+---
+title: "Walk-Forward Optimization Dashboard"
+tagline: "Out-of-sample backtest results from an algorithmic trading research system — TCN, MLP, and rule-based strategies compared honestly."
+year: 2026
+role: "Trading research & development"
+stack:
+  - Next.js
+  - TypeScript
+  - Recharts
+  - Tailwind CSS
+  - PyTorch (research)
+links:
+  live: "https://algo-trading-wfo-dashboard.vercel.app"
+  repo: "https://github.com/vandyand/algo-trading-wfo-dashboard-next"
+hero:
+  type: poster
+  poster: "/posters/algo-trading-wfo-dashboard.jpg"
+  alt: "Walk-forward optimization dashboard with out-of-sample equity curves and strategy comparison table"
+featured: false
+order: 6
+outcome: "Every equity curve on this dashboard is out-of-sample — models trained on a rolling window, tested only on the next unseen period, so the results reflect real trading conditions rather than curve fitting."
+keywords:
+  - walk-forward optimization
+  - algorithmic trading backtest
+  - out-of-sample equity curve
+  - TCN trading strategy
+  - quantitative strategy comparison
+---
+
+## Problem
+
+Backtests lie by default: train and test on overlapping data and any
+strategy looks brilliant. Walk-forward optimization is the discipline
+that fixes it — train on a rolling window, test on the next unseen
+period, repeat — but the results are a pile of per-window metrics
+nobody can read raw.
+
+## What I built
+
+A dashboard that visualizes real walk-forward runs from my multi-asset
+trading research system:
+
+- **Out-of-sample equity curves** — cumulative OOS returns stitched
+  across validation windows, per strategy.
+- **Strategy comparison** — TCN action models (temporal convolutional
+  networks over multi-timeframe features), TCN and MLP directional
+  classifiers, and hand-crafted momentum/mean-reversion rules as the
+  baseline, side by side.
+- **Per-window detail** — Sharpe, returns, and win rate for every
+  validation window, with expandable raw metrics.
+
+The underlying models are PyTorch; the dashboard renders curated run
+results — no inference in the app, just honest measurement.
+
+## Outcome
+
+A research tool that makes the train/test boundary visible instead of
+hiding it. It pairs with the [live trading
+dashboard](/projects/avd-trading-dashboard): this is where strategies
+prove themselves out-of-sample before any of them touch a broker.

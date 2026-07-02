@@ -1,0 +1,44 @@
+---
+title: "AI Meme Generator"
+tagline: "Type a description, get a meme — an early OpenAI image-generation app, kept alive across three model generations."
+year: 2023
+role: "Development"
+stack:
+  - JavaScript
+  - OpenAI API
+  - Vercel
+links:
+  live: "https://dumb-meme.vercel.app/"
+  repo: "https://github.com/vandyand/meme-generator"
+hero:
+  type: poster
+  poster: "/posters/dumb-meme.jpg"
+  alt: "Meme Generator app with a description input and generate button"
+featured: false
+order: 12
+outcome: "Built on DALL·E 2 in 2023 and still running today on gpt-image-1 — a small app that's survived every OpenAI image-model deprecation since."
+keywords:
+  - AI meme generator
+  - OpenAI image generation
+  - AI image app
+---
+
+## Problem
+
+The 2023 wave of AI image APIs made "text in, image out" apps trivial
+to start and easy to abandon. The real work turned out to be keeping
+one alive while the underlying models were deprecated out from under
+it.
+
+## What I built
+
+A meme generator: describe the meme you want, and the app orchestrates
+async calls to OpenAI's image-generation API and returns the result.
+Originally built on DALL·E 2; when OpenAI retired that model in 2026,
+the app was migrated to gpt-image-1 with base64 delivery.
+
+## Outcome
+
+Deliberately dumb, deliberately durable. Three years and multiple
+model migrations later it still works — which is more than most
+hackathon-era AI apps can say.
