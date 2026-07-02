@@ -29,7 +29,8 @@ No production styling. Goal: a running scaffold + proof that (a) the agent-world
 
 ### Verification (Phase 0)
 - Shell: `npm run build` exit 0
-- Playwright: poster-first render confirmed; embed loads on click; `public/heroes/agent-world/cover.webm` exists and plays (load in a bare `<video>` test page), file < 3 MB
+- Playwright: poster-first render confirmed; embed loads on click
+- IF the kling spike passed: `public/heroes/agent-world/cover.webm` exists and plays (bare `<video>` test page), file < 3 MB. IF it failed after 2 paid attempts: findings record the exact error + cost, and the poster-only hero fallback renders — v1 is NOT blocked on the video
 
 ## Phase 1: Foundation — tokens, themes, fonts, content layer, shell
 
