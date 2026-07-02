@@ -629,9 +629,12 @@ async function postControl(body) {
 // ---------------------------------------------------------------------------
 
 function validReplayPath(p) {
-  // same-origin, single path segment under /replays/, .jsonl only —
+  // same-origin, single path segment under replays/, .jsonl only —
   // rejects absolute/external URLs, protocol-relative, and traversal.
-  return typeof p === "string" && /^\/replays\/[A-Za-z0-9._-]+\.jsonl$/.test(p) &&
+  // Accepts both root-absolute (/replays/x.jsonl) and relative
+  // (replays/x.jsonl) forms — the vendored copy mounts under /emberwick/,
+  // so relative paths resolve against the document base.
+  return typeof p === "string" && /^\/?replays\/[A-Za-z0-9._-]+\.jsonl$/.test(p) &&
          !p.includes("..");
 }
 

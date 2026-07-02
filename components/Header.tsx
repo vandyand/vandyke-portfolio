@@ -8,7 +8,7 @@ export default function Header() {
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6">
         <Link
           href="/"
-          className="font-display text-xl tracking-tight text-ink transition-colors hover:text-accent"
+          className="whitespace-nowrap font-display text-xl tracking-tight text-ink transition-colors hover:text-accent"
         >
           Andrew Van&thinsp;Dyke
         </Link>
@@ -17,7 +17,9 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-chip px-3 py-2 font-mono text-kicker uppercase text-ink-muted transition-colors hover:bg-surface hover:text-ink"
+              className={`rounded-chip px-2.5 py-2 font-mono text-kicker uppercase text-ink-muted transition-colors hover:bg-surface hover:text-ink sm:px-3 ${
+                item.href.startsWith("mailto:") ? "hidden sm:inline-flex" : ""
+              }`}
             >
               {item.label}
             </Link>

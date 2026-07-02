@@ -49,8 +49,16 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-bg text-ink font-sans">
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-chip focus:bg-accent focus:px-4 focus:py-2 focus:font-mono focus:text-kicker focus:uppercase focus:text-accent-ink"
+        >
+          Skip to content
+        </a>
         <Header />
-        <div className="flex-1 flex flex-col">{children}</div>
+        <div id="main" className="flex-1 flex flex-col">
+          {children}
+        </div>
         <Footer />
       </body>
     </html>
