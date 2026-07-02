@@ -14,18 +14,18 @@ Phased build in `/home/kingjames/vandykeportfolio/portfolio`. Verification is li
 
 ## Phase 0A: Source + preview deploy (unblocks the spikes)
 
-- [ ] Create GitHub repo `vandyand/vandyke-portfolio` (public), add origin, push branch after the scaffold lands
-- [ ] Create Vercel project `vandyke-portfolio` in the sibling-demos org, NO production domain attached
-- [ ] First preview deploy — its URL is the public HTTPS host for kling still images (Phase 0) and the Lighthouse target (Phase 4)
+- [x] Create GitHub repo `vandyand/vandyke-portfolio` (public), add origin, push branch after the scaffold lands
+- [x] Create Vercel project `vandyke-portfolio` in the sibling-demos org, NO production domain attached
+- [x] First preview deploy — its URL is the public HTTPS host for kling still images (Phase 0) and the Lighthouse target (Phase 4)
 
 ## Phase 0: Spike — prove the two risky seams
 
 No production styling. Goal: a running scaffold + proof that (a) the agent-world embed works with good LCP behavior and (b) the kling video pipeline produces one usable hero loop this week.
 
-- [ ] Scaffold via a temp directory (this repo already contains `specs/` + `.git/`, so `create-next-app .` would refuse): `tmp=$(mktemp -d) && npx create-next-app@latest "$tmp/app" --ts --tailwind --app --no-src-dir --import-alias "@/*"`; copy generated files into repo root WITHOUT touching `specs/`; commit the package-lock; verify `npm run build` green; record exact versions
-- [ ] Embed spike: page with the Emberwick replay behind a static poster + play overlay (click-to-load). Decide and RECORD one stable embed strategy: (a) vendor the static replay assets (viewer html/js/css + demo.jsonl) into this repo's `public/emberwick/` — immune to agent-world redeploys (preferred), or (b) iframe pinned to an immutable Vercel deployment URL. Either way: `title` attr, minimal `sandbox` permissions, `referrerPolicy="no-referrer"`, explicit fallback poster. Verify with Playwright: (1) initial HTML paints the poster instantly, (2) click loads the town, (3) `prefers-reduced-motion` never auto-loads
-- [ ] Kling spike (~$0.65): generate ONE 5s seamless hero loop for agent-world — still: screenshot `agent-world/docs/screenshots/hero.png` (already exists) hosted publicly (it IS already public at https://agent-world-three.vercel.app — but that deploy doesn't include docs/; simplest: `vercel deploy` this repo's `public/` early or use any public host; decide and record); submit via `~/ascolais` REPL harness `dev/kling.clj` (same first/last frame URL, duration 5, std tier); poll; download mp4; `ffmpeg -an -c:v libvpx-vp9 -crf 34` → webm + poster jpg; put artifacts in `public/heroes/agent-world/{cover.mp4,cover.webm,poster.jpg}`
-- [ ] Record Phase 0 Findings in this file: versions, embed LCP notes, kling verdict + actual cost + wall time, chosen still-hosting path. If kling FAILS after 2 attempts: record error, switch Phase 3 video tasks to the documented fallback (animated CSS gradient heroes + posters) and demote videos to post-v1
+- [x] Scaffold via a temp directory (this repo already contains `specs/` + `.git/`, so `create-next-app .` would refuse): `tmp=$(mktemp -d) && npx create-next-app@latest "$tmp/app" --ts --tailwind --app --no-src-dir --import-alias "@/*"`; copy generated files into repo root WITHOUT touching `specs/`; commit the package-lock; verify `npm run build` green; record exact versions
+- [x] Embed spike: page with the Emberwick replay behind a static poster + play overlay (click-to-load). Decide and RECORD one stable embed strategy: (a) vendor the static replay assets (viewer html/js/css + demo.jsonl) into this repo's `public/emberwick/` — immune to agent-world redeploys (preferred), or (b) iframe pinned to an immutable Vercel deployment URL. Either way: `title` attr, minimal `sandbox` permissions, `referrerPolicy="no-referrer"`, explicit fallback poster. Verify with Playwright: (1) initial HTML paints the poster instantly, (2) click loads the town, (3) `prefers-reduced-motion` never auto-loads
+- [x] Kling spike (~$0.65): generate ONE 5s seamless hero loop for agent-world — still: screenshot `agent-world/docs/screenshots/hero.png` (already exists) hosted publicly (it IS already public at https://agent-world-three.vercel.app — but that deploy doesn't include docs/; simplest: `vercel deploy` this repo's `public/` early or use any public host; decide and record); submit via `~/ascolais` REPL harness `dev/kling.clj` (same first/last frame URL, duration 5, std tier); poll; download mp4; `ffmpeg -an -c:v libvpx-vp9 -crf 34` → webm + poster jpg; put artifacts in `public/heroes/agent-world/{cover.mp4,cover.webm,poster.jpg}`
+- [x] Record Phase 0 Findings in this file: versions, embed LCP notes, kling verdict + actual cost + wall time, chosen still-hosting path. If kling FAILS after 2 attempts: record error, switch Phase 3 video tasks to the documented fallback (animated CSS gradient heroes + posters) and demote videos to post-v1
 
 ### Verification (Phase 0)
 - Shell: `npm run build` exit 0
