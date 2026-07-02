@@ -1,7 +1,7 @@
 # Specifications
 
-*Auto-generated on 2026-07-02 17:48*
+*Auto-generated on 2026-07-02 17:51*
 
-## Planned
+## In Progress
 
 - [Portfolio Rewrite](portfolio-rewrite/README.md)
