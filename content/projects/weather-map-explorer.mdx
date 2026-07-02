@@ -1,0 +1,49 @@
+---
+title: "Weather Map Explorer"
+tagline: "Interactive geospatial weather visualization — pick a point on the map, get charted forecast and historical data."
+year: 2025
+role: "Frontend & data visualization"
+stack:
+  - React
+  - Node.js
+  - Leaflet
+  - Weather APIs
+links:
+  live: "https://weather-map-explorer.vercel.app/map"
+  repo: "https://github.com/vandyand/weather-insight"
+hero:
+  type: poster
+  poster: "/posters/weather-map-explorer.jpg"
+  alt: "Weather Map Explorer showing an interactive map with a weather data panel and forecast chart"
+featured: false
+order: 10
+outcome: "Click anywhere on the map and the app resolves the location, pulls weather data for it, and charts temperature, precipitation, and humidity — geospatial UX with real data behind it."
+keywords:
+  - geospatial visualization
+  - Leaflet weather map
+  - weather data charting
+  - interactive map application
+---
+
+## Problem
+
+Geospatial UI is its own discipline — tile layers, coordinate handling,
+map-driven state — and most weather apps hide the map behind a search
+box. This demo makes the map itself the query interface.
+
+## What I built
+
+An interactive explorer built on Leaflet:
+
+- **Map-first querying** — click any location; the app reverse-resolves
+  it and fetches weather for those coordinates.
+- **Charted results** — temperature, precipitation, and humidity
+  rendered as a normalized forecast chart alongside a raw data table.
+- **Reference dates** — pick a date to explore data around it, with
+  unit toggling (metric/imperial).
+
+## Outcome
+
+A compact demonstration of geospatial data processing and
+visualization: mapping library integration, third-party weather API
+orchestration, and chart rendering working together in one flow.

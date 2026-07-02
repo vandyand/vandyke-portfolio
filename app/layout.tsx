@@ -21,6 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.vandykeportfolio.com"),
   title: {
     default: "Andrew Van Dyke — Full-Stack & AI/ML Engineer",
     template: "%s — Andrew Van Dyke",
