@@ -46,12 +46,12 @@ No production styling. Goal: a running scaffold + proof that (a) the agent-world
 
 ## Phase 1: Foundation — tokens, themes, fonts, content layer, shell
 
-- [ ] Design tokens in `app/globals.css` (Tailwind 4 `@theme`): dark-leaning palette (near-black bg not #000, one saturated accent, careful neutrals) + full light equivalents under `[data-theme=light]` / media query; spacing/radii/shadow scale
-- [ ] Fonts via `next/font/local` or google: ONE display face + ONE mono (pick against mockups: display candidates Newsreader/Instrument Serif; mono Geist Mono/JetBrains Mono); body = system-ish sans or the display's text cut
-- [ ] Theme system: inline no-flash script in `app/layout.tsx` head (reads localStorage → data-theme, else system), `ThemeToggle` client component (sun/moon, persists, syncs with system changes), respects `prefers-color-scheme` by default
-- [ ] Content layer `lib/content.ts`: glob `content/projects/*.mdx`, gray-matter + zod schema {slug, title, tagline, year, role, stack[], links{live,repo}, hero{type: 'video'|'poster'|'embed', ...}, featured: bool, order, outcome, keywords[]}; build-time only; `lib/site.ts` for global data (nav, socials, services, proof stats, testimonials[] — empty)
-- [ ] Layout shell: header (name, nav: Work/About/Contact, theme toggle), footer (socials: GitHub vandyand, Upwork profile, email venturevd@gmail.com; colophon), `app/(site)` route group, 404 page
-- [ ] Seed 2 minimal project MDX files to prove the loader (agent-world + trading dashboard, content migrated from devfolio gatsby-config)
+- [x] Design tokens in `app/globals.css` (Tailwind 4 `@theme`): dark-leaning palette (near-black bg not #000, one saturated accent, careful neutrals) + full light equivalents under `[data-theme=light]` / media query; spacing/radii/shadow scale
+- [x] Fonts via `next/font/local` or google: ONE display face + ONE mono (pick against mockups: display candidates Newsreader/Instrument Serif; mono Geist Mono/JetBrains Mono); body = system-ish sans or the display's text cut
+- [x] Theme system: inline no-flash script in `app/layout.tsx` head (reads localStorage → data-theme, else system), `ThemeToggle` client component (sun/moon, persists, syncs with system changes), respects `prefers-color-scheme` by default
+- [x] Content layer `lib/content.ts`: glob `content/projects/*.mdx`, gray-matter + zod schema {slug, title, tagline, year, role, stack[], links{live,repo}, hero{type: 'video'|'poster'|'embed', ...}, featured: bool, order, outcome, keywords[]}; build-time only; `lib/site.ts` for global data (nav, socials, services, proof stats, testimonials[] — empty)
+- [x] Layout shell: header (name, nav: Work/About/Contact, theme toggle), footer (socials: GitHub vandyand, Upwork profile, email venturevd@gmail.com; colophon), `app/(site)` route group, 404 page
+- [x] Seed 2 minimal project MDX files to prove the loader (agent-world + trading dashboard, content migrated from devfolio gatsby-config)
 
 ### Verification (Phase 1)
 - Shell: `npm run build` + `npm run lint` exit 0
