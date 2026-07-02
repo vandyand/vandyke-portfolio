@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# vandykeportfolio.com — portfolio site
 
-## Getting Started
+Personal portfolio of Andrew Van Dyke. Next.js 16 (App Router, fully static) · Tailwind 4 · MDX · dual light/dark theming.
 
-First, run the development server:
+**Live:** https://vandyke-portfolio.vercel.app (pending domain cutover to vandykeportfolio.com)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Next.js 16** App Router, all routes statically generated (30+ routes), View Transitions enabled
+- **Tailwind 4** with a custom `@theme` token system — warm charcoal dark theme (default) + warm paper light theme, one ember accent
+- **Fonts:** Newsreader (display) · Inter (body) · JetBrains Mono (labels/chips), self-hosted via next/font
+- **Content as data:** `content/projects/*.mdx` with zod-validated frontmatter (`lib/content.ts`); rendering via next-mdx-remote/rsc
+- **Video heroes:** kling-v3.0-std loops (5s, same first/last frame = seamless), delivered as poster + webm + mp4, reduced-motion safe
+- **Emberwick embed:** the agent-world demo's static replay viewer vendored at `public/emberwick/` (click-to-load, sandboxed iframe)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Editing content
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Add a project: create `content/projects/<slug>.mdx` with frontmatter (see any existing file for the schema: title, tagline, year, role, stack, links, hero, featured, order, outcome, keywords) and a body with `## Problem`, `## What I built`, `## Outcome`. The archive, sitemap, OG image, and next/prev nav pick it up automatically.
 
-## Learn More
+Regenerate a video hero: screenshot the demo (16:9 crop) → host publicly (this project's prod deploy works: drop in `public/stills/`, `vercel deploy --prod`) → submit via `~/ascolais` `dev/kling.clj` (`submit-clip!` with the same URL as first+last frame, 5s, std tier ≈ $0.42) → `ffmpeg -i in.mp4 -an -c:v libvpx-vp9 -crf 34 cover.webm` + poster jpg → `public/heroes/<slug>/`.
 
-To learn more about Next.js, take a look at the following resources:
+## Theme system
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+System `prefers-color-scheme` by default; manual toggle persists to localStorage; no-flash inline script in `app/layout.tsx`. Tokens in `app/globals.css` (`[data-theme]` overrides).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploy / rollback runbook
 
-## Deploy on Vercel
+- Vercel project **vandyke-portfolio** (team andrew-van-dykes-projects). `vercel deploy --prod --yes` from repo root.
+- **Domain cutover** (not yet executed): `vercel domains add vandykeportfolio.com --force` and same for `www.` from this linked repo — moves the domains from the old `devfolio` project (same team; Vercel nameservers, instant).
+- **Rollback:** re-attach both domains to the `devfolio` project (dashboard or `vercel domains add` from a devfolio-linked dir). Old-site marker: response HTML contains `gatsby-global-css`. Keep devfolio deployed ≥48h post-cutover.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Lighthouse (2026-07-02, production, mobile)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Page | Perf | A11y | Best Practices | SEO |
+|---|---|---|---|---|
+| / | 98 | 100 | 100 | 100 |
+| /projects/agent-world | 97 | 100 | 100 | 100 |
