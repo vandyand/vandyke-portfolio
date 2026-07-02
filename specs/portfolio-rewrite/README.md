@@ -14,7 +14,7 @@ Full rewrite of vandykeportfolio.com: a highly customized, high-quality contract
 ## Goals
 
 - One interactive "whoa" hero (agent-world embed), calm high-craft everything else (90/10 rule).
-- Case-study page per project in one consistent template; 4 video heroes (5s seamless kling loops, poster+mp4+webm, reduced-motion safe).
+- Case-study page per project in one consistent template; up to 4 video heroes (5s seamless kling loops, poster+mp4+webm, reduced-motion safe) **conditional on the Phase 0 kling spike passing within the $8 all-in budget** — otherwise v1 ships poster-only heroes in the same template and videos are deferred post-v1.
 - System light/dark + persisted toggle, both themes fully designed, no flash.
 - Content as data: `content/projects/*.mdx`, zod-validated; adding a project = adding a file.
 - Lighthouse ≥95 across categories; JSON-LD, per-project OG images, sitemap, archive table.
