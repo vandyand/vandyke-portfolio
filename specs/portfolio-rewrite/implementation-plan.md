@@ -95,11 +95,11 @@ No production styling. Goal: a running scaffold + proof that (a) the agent-world
 
 ## Phase 4: Polish — motion, SEO, performance
 
-- [ ] Motion pass (restrained): scroll-driven reveals on section entry (CSS scroll-driven where possible, motion/react for the rest, all gated on prefers-reduced-motion), View Transitions between pages, hover micro-interactions on work rows/chips
-- [ ] SEO: JSON-LD Person + per-page metadata, sitemap.ts, robots.ts, canonical URLs (https://www.vandykeportfolio.com), descriptive alt text everywhere
-- [ ] Performance: `next/image` for all rasters, font subsetting, verify no layout shift from theme script, bundle check (no accidental client components), Lighthouse via Playwright/PageSpeed on production preview: ≥95 Perf/A11y/BP/SEO on home + agent-world case study (record numbers)
-- [ ] Optional if time (cut first): cmd-K palette (navigate projects, toggle theme, copy email)
-- [ ] Cross-check: every requirement in research.md "Functional" list has shipped or has a recorded deferral
+- [x] Motion pass (restrained): scroll-driven reveals on section entry (CSS scroll-driven where possible, motion/react for the rest, all gated on prefers-reduced-motion), View Transitions between pages, hover micro-interactions on work rows/chips
+- [x] SEO: JSON-LD Person + per-page metadata, sitemap.ts, robots.ts, canonical URLs (https://www.vandykeportfolio.com), descriptive alt text everywhere
+- [x] Performance: `next/image` for all rasters, font subsetting, verify no layout shift from theme script, bundle check (no accidental client components), Lighthouse via Playwright/PageSpeed on production preview: ≥95 Perf/A11y/BP/SEO on home + agent-world case study (record numbers)
+- [x] Optional if time (cut first): cmd-K palette (navigate projects, toggle theme, copy email)
+- [x] Cross-check: every requirement in research.md "Functional" list has shipped or has a recorded deferral
 
 ### Verification (Phase 4)
 - Lighthouse scores recorded ≥95×4 on the two pages (preview deploy)
