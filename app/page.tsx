@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import EmberwickEmbed from "@/components/EmberwickEmbed";
@@ -5,16 +6,48 @@ import { getFeaturedProjects } from "@/lib/content";
 import {
   proofStats,
   services,
+  site,
   socials,
   testimonials,
   UPWORK_PROFILE_URL,
 } from "@/lib/site";
+
+export const metadata: Metadata = {
+  alternates: { canonical: `${site.url}/` },
+};
+
+/** JSON-LD Person schema — who this site is about, machine-readable. */
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  url: site.url,
+  jobTitle: "Full-Stack & AI/ML Engineer",
+  email: `mailto:${socials.email}`,
+  sameAs: [socials.github, socials.upwork],
+  knowsAbout: [
+    "LLM agent orchestration",
+    "LangGraph",
+    "AutoGen",
+    "CrewAI",
+    "Algorithmic trading",
+    "Next.js",
+    "React",
+    "TypeScript",
+    "Python",
+    "Clojure",
+  ],
+};
 
 export default function Home() {
   const featured = getFeaturedProjects();
 
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="mx-auto w-full max-w-6xl px-6 pt-16 sm:pt-24">
         <p className="inline-flex items-center gap-2.5 rounded-full border border-line bg-surface px-3.5 py-1.5 font-mono text-xs uppercase tracking-[0.14em] text-ink-muted">
@@ -75,7 +108,7 @@ export default function Home() {
       >
         <dl className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-x-8 gap-y-8 px-6 py-10 sm:grid-cols-3">
           {proofStats.map((stat) => (
-            <div key={stat.label} className="flex flex-col">
+            <div key={stat.label} className="reveal flex flex-col">
               <dt className="order-last mt-1.5 font-mono text-kicker uppercase text-ink-faint">
                 {stat.label}
               </dt>
@@ -100,7 +133,7 @@ export default function Home() {
           {featured.map((project, i) => (
             <article
               key={project.slug}
-              className="grid items-center gap-8 md:grid-cols-2 md:gap-12"
+              className="reveal grid items-center gap-8 md:grid-cols-2 md:gap-12"
             >
               <Link
                 href={`/projects/${project.slug}`}
@@ -144,7 +177,7 @@ export default function Home() {
                   {project.stack.slice(0, 6).map((tech) => (
                     <li
                       key={tech}
-                      className="rounded-chip border border-line bg-surface px-2.5 py-1 font-mono text-xs text-ink-muted"
+                      className="lift rounded-chip border border-line bg-surface px-2.5 py-1 font-mono text-xs text-ink-muted"
                     >
                       {tech}
                     </li>
@@ -152,10 +185,15 @@ export default function Home() {
                 </ul>
                 <Link
                   href={`/projects/${project.slug}`}
-                  className="mt-7 inline-flex items-center gap-1.5 font-mono text-kicker uppercase text-accent transition-colors hover:text-accent-strong"
+                  className="group/cta mt-7 inline-flex items-center gap-1.5 font-mono text-kicker uppercase text-accent transition-colors hover:text-accent-strong"
                 >
                   Read case study
-                  <span aria-hidden="true">→</span>
+                  <span
+                    aria-hidden="true"
+                    className="transition-transform duration-200 motion-safe:group-hover/cta:translate-x-0.5"
+                  >
+                    →
+                  </span>
                 </Link>
               </div>
             </article>
@@ -186,7 +224,7 @@ export default function Home() {
             {services.map((service) => (
               <div
                 key={service.title}
-                className="rounded-card border border-line bg-bg p-7 shadow-card"
+                className="reveal lift rounded-card border border-line bg-bg p-7 shadow-card"
               >
                 <h3 className="font-display text-2xl text-ink">
                   {service.title}
@@ -232,7 +270,7 @@ export default function Home() {
       <section
         id="contact"
         aria-label="Contact"
-        className="mx-auto w-full max-w-6xl px-6 py-24 sm:py-32"
+        className="reveal mx-auto w-full max-w-6xl px-6 py-24 sm:py-32"
       >
         <h2 className="max-w-2xl font-display text-display text-ink">
           Have something <em className="text-accent">to build?</em>

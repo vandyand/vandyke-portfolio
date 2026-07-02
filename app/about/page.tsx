@@ -132,7 +132,7 @@ export default function AboutPage() {
           {experience.map((job, i) => (
             <li
               key={job.role + job.org}
-              className={`grid gap-2 py-7 sm:grid-cols-[11rem_1fr] sm:gap-8 ${
+              className={`reveal grid gap-2 py-7 sm:grid-cols-[11rem_1fr] sm:gap-8 ${
                 i > 0 ? "border-t border-line" : ""
               }`}
             >
@@ -171,7 +171,7 @@ export default function AboutPage() {
           {skills.map((group) => (
             <div
               key={group.name}
-              className="rounded-card border border-line bg-surface p-6 shadow-card"
+              className="reveal lift rounded-card border border-line bg-surface p-6 shadow-card"
             >
               <dt className="font-display text-xl text-ink">{group.name}</dt>
               <dd className="mt-2.5 text-sm leading-relaxed text-ink-muted">

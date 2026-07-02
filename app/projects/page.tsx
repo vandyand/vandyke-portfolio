@@ -35,7 +35,7 @@ export default function ProjectsPage() {
             <Link
               key={project.slug}
               href={`/projects/${project.slug}`}
-              className="group block"
+              className="group reveal block"
             >
               <span className="relative block aspect-video overflow-hidden rounded-card border border-line bg-surface shadow-card transition-colors group-hover:border-accent">
                 {project.hero.poster ? (

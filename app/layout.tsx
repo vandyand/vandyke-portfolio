@@ -1,23 +1,50 @@
 import type { Metadata } from "next";
+import * as React from "react";
 import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
+/**
+ * React's <ViewTransition> (enabled by `experimental.viewTransition`
+ * in next.config.ts). Next vendors a React build that exports it, but
+ * @types/react doesn't know about it yet — hence the cast. Wrapping
+ * the route children gives a ~180ms cross-fade between pages;
+ * globals.css turns it off under prefers-reduced-motion.
+ */
+const ViewTransition = (
+  React as unknown as {
+    ViewTransition: React.ComponentType<{ children: React.ReactNode }>;
+  }
+).ViewTransition;
+
+/**
+ * All three fonts use display:"optional": they're self-hosted +
+ * preloaded so they win the render race on normal connections, but a
+ * slow first visit falls back to system fonts instead of re-painting
+ * the hero headline later (that font-swap repaint was costing ~2s of
+ * LCP on throttled mobile).
+ */
 const newsreader = Newsreader({
   variable: "--font-newsreader",
   subsets: ["latin"],
   style: ["normal", "italic"],
+  weight: "400", // only weight used — static files beat the variable font
+  display: "optional",
 });
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "optional",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "optional",
 });
 
 export const metadata: Metadata = {
@@ -58,7 +85,7 @@ export default function RootLayout({
         </a>
         <Header />
         <div id="main" className="flex-1 flex flex-col">
-          {children}
+          <ViewTransition>{children}</ViewTransition>
         </div>
         <Footer />
       </body>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { preload } from "react-dom";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import EmberwickEmbed from "@/components/EmberwickEmbed";
@@ -48,6 +49,16 @@ function Hero({ project }: { project: Project }) {
 
   if (project.hero.type === "embed") {
     return <EmberwickEmbed />;
+  }
+
+  // The <video poster> attribute isn't preload-scanned, so without this
+  // hint the LCP image starts downloading ~1s late. RSC preload() puts a
+  // <link rel="preload"> in the SSR'd <head>.
+  if (project.hero.type === "video" && project.hero.video) {
+    preload(project.hero.poster ?? `${project.hero.video}/poster.jpg`, {
+      as: "image",
+      fetchPriority: "high",
+    });
   }
 
   return (
@@ -122,7 +133,7 @@ export default async function ProjectPage({ params }: Params) {
             {project.stack.map((tech) => (
               <li
                 key={tech}
-                className="rounded-chip border border-line bg-surface px-2.5 py-1 font-mono text-xs text-ink-muted"
+                className="lift rounded-chip border border-line bg-surface px-2.5 py-1 font-mono text-xs text-ink-muted"
               >
                 {tech}
               </li>
@@ -164,7 +175,7 @@ export default async function ProjectPage({ params }: Params) {
         <Link
           href={`/projects/${prev.slug}`}
           rel="prev"
-          className="group rounded-card border border-line bg-surface p-6 shadow-card transition-colors hover:border-accent"
+          className="group lift rounded-card border border-line bg-surface p-6 shadow-card transition-colors hover:border-accent"
         >
           <span className="font-mono text-kicker uppercase text-ink-faint">
             <span aria-hidden="true">←</span> Previous
@@ -176,7 +187,7 @@ export default async function ProjectPage({ params }: Params) {
         <Link
           href={`/projects/${next.slug}`}
           rel="next"
-          className="group rounded-card border border-line bg-surface p-6 text-right shadow-card transition-colors hover:border-accent"
+          className="group lift rounded-card border border-line bg-surface p-6 text-right shadow-card transition-colors hover:border-accent"
         >
           <span className="font-mono text-kicker uppercase text-ink-faint">
             Next <span aria-hidden="true">→</span>
