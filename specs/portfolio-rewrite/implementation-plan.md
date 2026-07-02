@@ -59,12 +59,12 @@ No production styling. Goal: a running scaffold + proof that (a) the agent-world
 
 ## Phase 2: Home page
 
-- [ ] Hero: display-type headline (positioning: senior full-stack + AI/ML engineer building agentic systems and trading infrastructure), sub-line, primary CTA (mailto + Upwork link), availability badge; the Emberwick embed (Phase 0 pattern: poster → click/in-view load; muted; reduced-motion → poster) with caption linking to the case study
-- [ ] Proof bar: 3–4 real stats from `lib/site.ts` (years shipping, live demos count, domains: trading/LLM agents/full-stack) — no invented numbers
-- [ ] Selected work: featured projects (order from frontmatter) as large alternating rows (not uniform cards): poster/still, title, one-line outcome, stack chips, → case study
-- [ ] Services / How I work: 3 engagement shapes (build sprint / ongoing / audit+rescue) with short copy
-- [ ] Testimonials: render from site data ONLY if non-empty (it starts empty — verify section absent)
-- [ ] Contact section + footer CTA; skip-to-content link; keyboard/a11y pass on interactive elements
+- [x] Hero: display-type headline (positioning: senior full-stack + AI/ML engineer building agentic systems and trading infrastructure), sub-line, primary CTA (mailto + Upwork link), availability badge; the Emberwick embed (Phase 0 pattern: poster → click/in-view load; muted; reduced-motion → poster) with caption linking to the case study
+- [x] Proof bar: 3–4 real stats from `lib/site.ts` (years shipping, live demos count, domains: trading/LLM agents/full-stack) — no invented numbers
+- [x] Selected work: featured projects (order from frontmatter) as large alternating rows (not uniform cards): poster/still, title, one-line outcome, stack chips, → case study
+- [x] Services / How I work: 3 engagement shapes (build sprint / ongoing / audit+rescue) with short copy
+- [x] Testimonials: render from site data ONLY if non-empty (it starts empty — verify section absent)
+- [x] Contact section + footer CTA; skip-to-content link; keyboard/a11y pass on interactive elements
 
 ### Verification (Phase 2)
 - Shell: build + lint green
