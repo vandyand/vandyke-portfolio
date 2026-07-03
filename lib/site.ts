@@ -66,13 +66,13 @@ export const testimonials: {
 }[] = [
   {
     quote:
-      "Andrew was great to work with. Very responsive and an excellent communicator. I would definitely recommend working…",
+      "Andrew was great to work with. Very responsive and an excellent communicator. … I would definitely recommend working with him for projects of any size.",
     author: "Upwork client — ★ 5.0",
     role: "Senior Advisor, Playwright Implementation · Mar 2026",
   },
   {
     quote:
-      "Andrew was great to work with. He is easy to talk to, and brought great energy to the session. He was knowledgeable about stock trading and machine learning…",
+      "Andrew was great to work with. He is easy to talk to, and brought great energy to the session. He was knowledgeable about stock trading and machine learning, and he explained concepts in a practical, straightforward way. I left the consultation with a much clearer understanding of the gaps I have in my plan.",
     author: "Upwork client — ★ 5.0",
     role: "ML for Stock Market Data, consultation · Jan 2026",
   },
