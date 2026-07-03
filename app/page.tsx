@@ -4,6 +4,7 @@ import Link from "next/link";
 import EmberwickEmbed from "@/components/EmberwickEmbed";
 import { getFeaturedProjects } from "@/lib/content";
 import {
+  clientEndorsements,
   proofStats,
   services,
   site,
@@ -247,7 +248,20 @@ export default function Home() {
           <h2 className="font-mono text-kicker uppercase text-ink-faint">
             Kind words
           </h2>
-          <div className="mt-10 grid gap-6 md:grid-cols-2">
+          <ul
+            aria-label="Client endorsements from Upwork"
+            className="mt-6 flex flex-wrap gap-2"
+          >
+            {clientEndorsements.map((tag) => (
+              <li
+                key={tag}
+                className="rounded-chip border border-line bg-surface px-3 py-1 font-mono text-xs text-ink-muted"
+              >
+                {tag}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8 grid gap-6 md:grid-cols-2">
             {testimonials.map((t) => (
               <figure
                 key={t.quote}

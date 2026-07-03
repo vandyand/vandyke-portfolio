@@ -56,10 +56,36 @@ export const proofStats = [
 
 /**
  * Testimonials render ONLY when this array is non-empty.
- * TODO(Andrew): add real, authorized quotes — never fabricate.
+ * Real Upwork client reviews (provided by Andrew 2026-07-02); quotes are
+ * verbatim prefixes of the originals — never fabricate or complete them.
  */
 export const testimonials: {
   quote: string;
   author: string;
   role?: string;
-}[] = [];
+}[] = [
+  {
+    quote:
+      "Andrew was great to work with. Very responsive and an excellent communicator. I would definitely recommend working…",
+    author: "Upwork client — ★ 5.0",
+    role: "Senior Advisor, Playwright Implementation · Mar 2026",
+  },
+  {
+    quote:
+      "Andrew was great to work with. He is easy to talk to, and brought great energy to the session. He was knowledgeable about stock trading and machine learning…",
+    author: "Upwork client — ★ 5.0",
+    role: "ML for Stock Market Data, consultation · Jan 2026",
+  },
+];
+
+/**
+ * Client endorsement tags from Upwork engagements (Product Engineer,
+ * Next.js/Node, Mar–Jul 2026 among others). Real tags only.
+ */
+export const clientEndorsements = [
+  "Reliable",
+  "Solution Oriented",
+  "Clear Communicator",
+  "Detail Oriented",
+  "Professional",
+] as const;
