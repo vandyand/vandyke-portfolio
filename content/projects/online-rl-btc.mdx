@@ -1,0 +1,87 @@
+---
+title: "Online RL on Bitcoin Perpetuals"
+tagline: "A SAC agent that trains itself live on streaming BTC market data — with an X-ray dashboard into every layer of the network."
+year: 2026
+role: "Design, architecture & implementation"
+stack:
+  - PyTorch
+  - SAC
+  - Mamba2
+  - CNN
+  - Next.js
+  - WebSocket
+  - Bitunix API
+links:
+  live: "https://online-rl-btc.vercel.app"
+  repo: "https://github.com/vandyand/online-rl-btc-perps"
+hero:
+  type: video
+  video: "/heroes/online-rl-btc"
+  poster: "/heroes/online-rl-btc/poster.jpg"
+  alt: "X-ray dashboard of the online RL trading system — feature blocks feeding four neural encoders into a SAC head, with live NAV and training stats"
+featured: true
+order: 2
+outcome: "A reinforcement-learning trading system that does true online learning — 17 live feature blocks, four neural encoders, and a continuous SAC head training on streaming data — shipped as a replayable X-ray dashboard of a real April 2026 paper run, small net loss and all."
+keywords:
+  - reinforcement learning trading
+  - soft actor-critic
+  - online learning
+  - Mamba2 state-space model
+  - order book CNN
+  - crypto perpetual futures
+  - PyTorch
+---
+
+## Problem
+
+Most "RL trading" projects are trained offline on a frozen dataset and then
+shown as a backtest chart — which hides the two hard problems: learning
+*online* from non-stationary streaming data, and knowing what the network is
+actually doing while it trades. For my AI/ML bootcamp capstone (April 2026)
+I wanted the opposite: an agent that trains continuously on live market
+data, and a dashboard honest enough to show every layer of it — including
+the P&L, whatever it turned out to be.
+
+## What I built
+
+A live online-learning RL system for BTC perpetual futures. A Soft
+Actor-Critic agent trains continuously as data streams in — no
+train/deploy split, the weights that trade are the weights being updated.
+
+**17 live feature blocks → 218 input dimensions**, ingested in real time:
+5Hz L2 order-book microstructure, funding and open interest,
+cross-exchange premium, liquidations, Deribit options flow, stablecoin
+supply, and social sentiment, among others — each block with its own
+freshness tracking on the dashboard.
+
+**Four neural encoders** turn that state into latents:
+
+- an **order-book CNN** over the top 15 price levels × 60 ticks of L2 data
+- a **Mamba2 temporal state-space model** over the recent feature history
+- a **218-dim full-state MLP** over the raw feature vector
+- a **cross-block attention** encoder treating the 17 blocks as tokens
+
+**A continuous SAC head** sits on top, with two additions that came out of
+watching it trade: an anti-churn *temperature integrator* (entropy
+temperature steered to keep the agent from thrashing in and out of
+positions) and a *hold-triangle reward* that pays for holding a position
+through favorable moves instead of scalping every tick.
+
+The dashboard is an **X-ray of the whole network updating live**: encoder
+latent heatmaps, Q-values, actor/critic losses, every fill on a trade
+tape, and the NAV curve — all streamed over WebSocket from the training
+loop while it runs against the Bitunix perpetuals API.
+
+## Outcome
+
+The recorded paper-trading run ended at a **small net loss** — and that's
+displayed on the demo, right in the hero. The point of the project is the
+machinery: genuinely online RL on live, messy, multi-source market data,
+with full visibility into what every component is doing. No cherry-picked
+backtest, no survivorship — a real system on real data, shown as it ran.
+
+Like Agent World, the live demo is a **zero-backend replay**: every frame
+of the April 2026 run was logged by the real system, and the deployed site
+replays that recording — same dashboard code, no keys, no infrastructure
+to keep alive. The system itself is resurrectable against live exchange
+data; the replay is the honest, permanent artifact of what it did.

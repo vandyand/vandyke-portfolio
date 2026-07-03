@@ -49,7 +49,7 @@ export const services = [
 
 /** Real, verifiable numbers only — no invented outcomes. */
 export const proofStats = [
-  { value: "12+", label: "live demos & production apps" },
+  { value: "13+", label: "live demos & production apps" },
   { value: "3", label: "domains — trading, LLM agents, full-stack" },
   { value: "6+", label: "years shipping software" },
 ] as const;
