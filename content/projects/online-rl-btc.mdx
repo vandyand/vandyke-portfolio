@@ -6,7 +6,7 @@ role: "Design, architecture & implementation"
 stack:
   - PyTorch
   - SAC
-  - Mamba2
+  - GRU
   - CNN
   - Next.js
   - WebSocket
@@ -21,12 +21,12 @@ hero:
   alt: "X-ray dashboard of the online RL trading system — feature blocks feeding four neural encoders into a SAC head, with live NAV and training stats"
 featured: true
 order: 2
-outcome: "A reinforcement-learning trading system that does true online learning — 17 live feature blocks, four neural encoders, and a continuous SAC head training on streaming data — shipped as a live X-ray dashboard streaming the system as it trades 24/7 on a 1Hz-certified box, small net loss and all."
+outcome: "A reinforcement-learning trading system that does true online learning — 16 live feature blocks, four neural encoders, and a continuous SAC head training on streaming data — shipped as a live X-ray dashboard streaming the system as it trades 24/7 on a 1Hz-certified box, small net loss and all."
 keywords:
   - reinforcement learning trading
   - soft actor-critic
   - online learning
-  - Mamba2 state-space model
+  - GRU temporal encoder
   - order book CNN
   - crypto perpetual futures
   - PyTorch
@@ -48,7 +48,7 @@ A live online-learning RL system for BTC perpetual futures. A Soft
 Actor-Critic agent trains continuously as data streams in — no
 train/deploy split, the weights that trade are the weights being updated.
 
-**17 live feature blocks → 218 input dimensions**, ingested in real time:
+**16 live feature blocks → a 116-dim state vector**, ingested in real time:
 5Hz L2 order-book microstructure, funding and open interest,
 cross-exchange premium, liquidations, Deribit options flow, stablecoin
 supply, and social sentiment, among others — each block with its own
@@ -57,9 +57,9 @@ freshness tracking on the dashboard.
 **Four neural encoders** turn that state into latents:
 
 - an **order-book CNN** over the top 15 price levels × 60 ticks of L2 data
-- a **Mamba2 temporal state-space model** over the recent feature history
-- a **218-dim full-state MLP** over the raw feature vector
-- a **cross-block attention** encoder treating the 17 blocks as tokens
+- a **2-layer GRU temporal encoder** over the recent feature history
+- a **116-dim full-state MLP** over the raw feature vector
+- a **cross-block attention** encoder treating the 16 blocks as tokens
 
 **A continuous SAC head** sits on top, with two additions that came out of
 watching it trade: an anti-churn *temperature integrator* (entropy
