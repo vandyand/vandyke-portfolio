@@ -1,0 +1,391 @@
+---
+title: "The Vibe-Coded SaaS Teardown"
+tagline: "I let AI scaffold a multi-tenant SaaS, then audited it like a senior engineer — and found eight ways it would leak one customer's data to another."
+year: 2026
+role: "Security audit, exploit development & remediation"
+stack:
+  - Next.js
+  - Supabase
+  - PostgreSQL
+  - Row-Level Security
+  - TypeScript
+links:
+  live: "https://vibe-coded-saas-teardown.vercel.app"
+  repo: "https://github.com/vandyand/saas-security-teardown"
+hero:
+  type: poster
+  poster: "/posters/vibe-coded-saas-teardown.png"
+  alt: "A deliberately vulnerable Practice Portal SaaS with a red 'intentionally vulnerable demo' banner, alongside a terminal running eight exploits."
+featured: true
+order: 3
+outcome: "A realistic AI-built B2B SaaS with eight planted-but-real vulnerabilities, a reproducible exploit for each (anon key reads every tenant; a member escalates to admin; patient PHI downloads with no auth), and a fixed branch whose 8/8 regression tests prove tenant isolation holds. The diff is the audit."
+keywords:
+  - supabase security
+  - row-level security
+  - RLS
+  - multi-tenant SaaS security
+  - saas security audit
+  - AI-generated code review
+  - postgres RLS policies
+  - tenant isolation
+---
+
+## The premise
+
+Teams are shipping production SaaS scaffolded by AI faster than anyone can
+review it. The code *runs*. It demos beautifully. And in a multi-tenant app it
+is often one missing line away from handing every customer's data to every other
+customer.
+
+So I ran the experiment honestly: I had an AI scaffold a realistic B2B
+**client portal** — the kind an accounting firm or a care-management practice
+would actually buy — with orgs, users, invoices, documents, and a team page.
+Then I audited it the way I audit client code: assume nothing, log in as one
+tenant, and try to read another's data.
+
+It had **eight** distinct ways to do exactly that. None of them are exotic.
+Every one is a real mistake I've seen in production Supabase apps, and every one
+*passes a casual test* — because in single-tenant dev, with one company and one
+happy-path click-through, nothing looks wrong.
+
+Two tenants are seeded throughout: **Ledgerline CPA** (accounting) and
+**Willowbrook Care** (healthcare). Everything below is logged in as one, reading
+the other.
+
+> **Ethics.** This is my own app, my own throwaway database, seeded entirely
+> with fake data. Nothing here touches a real system or real customer. The
+> [vulnerable branch](https://github.com/vandyand/saas-security-teardown) and the
+> [fixed branch](https://github.com/vandyand/saas-security-teardown/tree/fixed)
+> are both public; the diff between them is the audit.
+
+## Why Supabase makes this the whole ballgame
+
+Supabase hands your Postgres database *directly to the browser* through a public
+"anon" key. A logged-in user's browser can literally run `select * from
+invoices`. The only thing standing between them and every other firm's rows is
+**Row-Level Security (RLS)** — policies attached to each table that filter which
+rows a caller may see.
+
+That means RLS isn't a nice-to-have layer on top of your access control. In
+Supabase it *is* your access control. A single table with RLS off, or a policy
+that says `using (true)`, is not a bug ticket — it's a data breach. Six of the
+eight findings below live exactly there.
+
+## The eight findings
+
+### 1 — RLS never enabled on a table · **Critical**
+
+**What the AI shipped.** It enabled RLS on the tables it was thinking about
+(`invoices`, `documents`) and simply never enabled it on `orgs`. No policy, no
+protection.
+
+**The exploit.** With nothing but the public anon key — not even logged in:
+
+```js
+const supabase = createClient(SUPABASE_URL, ANON_KEY);
+const { data } = await supabase.from("orgs").select("*");
+// → 2 rows: "Ledgerline CPA" (accounting), "Willowbrook Care" (healthcare)
+```
+
+Every tenant on the platform, enumerable by anyone who opens the site. That's
+the customer list, and it's the org IDs that make the later attacks precise.
+
+**Why it passed the casual test.** In dev there's one org. `select * from orgs`
+returns "your" org and looks perfectly scoped. The hole only appears once a
+*second* tenant exists — i.e. in production.
+
+**The fix.** Enable RLS and scope to the caller's org:
+
+```sql
+alter table public.orgs enable row level security;
+create policy "orgs: own org only" on public.orgs for select
+  using (id = public.current_org_id());
+```
+
+*Takeaway: RLS is opt-in per table. "I added policies" is not the same as "every
+table is covered." Audit the list, not the highlights.*
+
+### 2 — A child table with no policy · **Critical**
+
+**What the AI shipped.** `invoices` got a correct, org-scoped policy. Its child
+table `line_items` — same financial data, one join away — got none.
+
+**The exploit.** Not even logged in:
+
+```js
+await supabase.from("invoices").select("*");    // → 0 rows. RLS holds. 
+await supabase.from("line_items").select("*");  // → 8 rows. Every firm's detail.
+// $600.00  Northwind Traders — advisory retainer
+// $600.00  Cedar Family Practice — advisory retainer  ← different tenant
+```
+
+The front door is locked; the side door is wide open. Anyone reads every firm's
+invoice line items directly.
+
+**Why it passed the casual test.** The invoices page works and *is* protected.
+Nobody clicks a URL that queries `line_items` directly — but an attacker with
+the anon key doesn't use your UI.
+
+**The fix.** Enable RLS on the child and scope it through its parent:
+
+```sql
+alter table public.line_items enable row level security;
+create policy "line_items: own org only" on public.line_items for select
+  using (invoice_id in (
+    select id from public.invoices where org_id = public.current_org_id()
+  ));
+```
+
+*Takeaway: protection doesn't inherit across foreign keys. Every table that
+holds tenant data needs its own policy — especially the boring child tables.*
+
+### 3 — A policy that checks existence, not ownership · **Critical**
+
+**What the AI shipped.** `profiles` *looks* locked down — it has RLS on and a
+policy. The policy is `using (true)`.
+
+```sql
+create policy "Profiles are viewable by authenticated users"
+  on public.profiles for select using (true);
+```
+
+**The exploit.** Log in as Willowbrook's most junior member and read the user
+table:
+
+```js
+await supabase.auth.signInWithPassword({ email: "raj@willowbrook.test", ... });
+const { data } = await supabase.from("profiles").select("*");
+// → 4 rows across BOTH orgs: dana@ledgerline, sam@ledgerline,
+//   nora@willowbrook, raj@willowbrook
+```
+
+`using (true)` means "is there *any* session?" — not "does this row belong to
+you?" Every authenticated user reads every user in the database.
+
+**Why it passed the casual test.** There's a green checkmark next to "RLS
+enabled." Dashboards report the table as protected. It takes reading the
+*predicate* to see that it protects nothing.
+
+**The fix.** Scope by ownership. (And beware the trap: a `profiles` policy that
+selects from `profiles` recurses infinitely — Postgres error 42P17. The standard
+fix is a `security definer` helper that resolves the caller's org without
+re-triggering RLS.)
+
+```sql
+create function public.current_org_id() returns uuid
+  language sql stable security definer set search_path = public
+as $$ select org_id from public.profiles where id = auth.uid() $$;
+
+create policy "profiles: own org only" on public.profiles for select
+  using (org_id = public.current_org_id());
+```
+
+*Takeaway: "has a policy" ≠ "has the right policy." `using (true)` is a lock with
+no tumblers.*
+
+### 4 — The service-role key shipped to the browser · **Critical**
+
+**What the AI shipped.** The dashboard needed a count across all rows; the anon
+client (correctly) couldn't see them, so the quick fix reached for the
+service-role client — in a `"use client"` component, reading
+`NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY`.
+
+**The exploit.** The `NEXT_PUBLIC_` prefix bakes that key into the JavaScript
+every visitor downloads. It's not hypothetical — the audit found the full
+service-role JWT sitting in a shipped bundle:
+
+```
+service_role JWT present in browser JS?  true
+  → /_next/static/chunks/app/dashboard/page.js
+```
+
+The service-role key *bypasses RLS entirely*. Whoever reads it owns the database
+— every org's SSNs, internal notes, everything:
+
+```js
+const godmode = createClient(SUPABASE_URL, LEAKED_KEY_FROM_BUNDLE);
+await godmode.from("profiles").select("email, ssn_last4, internal_notes");
+// dana@ledgerline  ssn_last4=4417  "Managing partner. Comp: $310k…"
+// nora@willowbrook ssn_last4=7781  "Clinic director. DEA# on file…"
+```
+
+**Why it passed the casual test.** It works. The dashboard shows its number.
+Nothing errors. The key is invisible unless you open devtools — which the
+developer never does, and the attacker always does.
+
+**The fix.** Delete the file. Service-role keys are server-only, full stop; the
+widget uses the ordinary anon client and is scoped by RLS like everything else.
+
+*Takeaway: `NEXT_PUBLIC_` is a publish button. Any secret behind it is already
+public. A service-role key never touches client code.*
+
+### 5 — Authorization enforced only in React · **High**
+
+**What the AI shipped.** An admin-only revenue dashboard. The `/admin` page
+hides the link with `if (role === "admin")`. The API route behind it,
+`/api/admin/revenue`, checks that you're logged in — and never checks your role.
+
+**The exploit.** Log in as a *member* and call the endpoint the UI never showed
+you:
+
+```js
+// signed in as sam@ledgerline.test — role: "member"
+await fetch("/api/admin/revenue", { headers: { Authorization: `Bearer ${token}` }});
+// → HTTP 200  { report: "firm-revenue", total_cents: 605000, … }
+```
+
+Hiding the button is not access control.
+
+**Why it passed the casual test.** Log in as an admin (the developer's own
+account) and everything's correct — the link shows, the page loads. The bug only
+exists for the users who *aren't* supposed to see it, and you're never testing as
+them.
+
+**The fix.** Enforce the role on the server, where the data is:
+
+```ts
+const { data: me } = await supabase.from("profiles").select("role").eq("id", user.id).single();
+if (me?.role !== "admin") return NextResponse.json({ error: "forbidden" }, { status: 403 });
+```
+
+*Takeaway: the client decides what to render; the server decides what's allowed.
+Every privileged route re-checks, regardless of what the UI shows.*
+
+### 6 — The server trusts the client's input · **High**
+
+**What the AI shipped.** A "update your profile" endpoint that writes whatever
+the client sends straight to the row:
+
+```ts
+const CLIENT_EDITABLE = ["full_name", "role", "org_id", "email"];
+```
+
+The form only exposes `full_name`, so in testing it only ever changes the name.
+
+**The exploit.** Send a field the form doesn't — and promote yourself:
+
+```js
+// signed in as sam@ledgerline.test — role: "member"
+await fetch("/api/profile", { method: "PATCH",
+  headers: { Authorization: `Bearer ${token}`, "content-type": "application/json" },
+  body: JSON.stringify({ role: "admin" }) });
+// role before: member  →  role after: admin
+```
+
+Same class of bug lets you send `org_id` and move yourself into another firm.
+
+**Why it passed the casual test.** The UI form physically can't send `role`, so
+manual testing never triggers it. `curl` has no such manners.
+
+**The fix.** The server owns the allowlist — one field, and it uses the caller's
+own token so the row-level UPDATE policy is a second line of defense:
+
+```ts
+const ALLOWED_FIELDS = ["full_name"]; // role and org_id are never client-writable
+```
+
+*Takeaway: mass assignment is trusting the shape of a request. Decide
+server-side exactly which fields a user may change, and ignore the rest.*
+
+### 7 — A public storage bucket · **High**
+
+**What the AI shipped.** KYC packets and patient intake forms uploaded to a
+Supabase Storage bucket created with `public: true`. The `documents` *table* is
+correctly RLS-scoped — but the files themselves have no access control at all.
+
+**The exploit.** A raw `fetch` to the public object URL — no `Authorization`
+header, no anon key, nothing:
+
+```
+GET /storage/v1/object/public/documents/<org>/northwind-kyc.txt
+→ HTTP 200
+  KYC — Northwind Traders | EIN: 84-1938271 | Beneficial owner SSN: 402-11-4417
+
+GET /storage/v1/object/public/documents/<org>/alvarez-intake.txt
+→ HTTP 200
+  PATIENT INTAKE (PHI) | Name: Jordan Alvarez | DOB: 1984-03-12 | Dx: Type 2 diabetes
+```
+
+These URLs work for anyone, forever, with no expiry and no revocation. Forward
+one in an email, leak one in a `Referer` header, and the PHI is gone.
+
+**Why it passed the casual test.** The upload works, the download works, the app
+feels done. "Public" sounds like "shareable," not "world-readable."
+
+**The fix.** Make the bucket private and serve files through short-lived signed
+URLs:
+
+```ts
+await supabase.storage.createBucket("documents", { public: false });
+const { data } = await supabase.storage.from("documents").createSignedUrl(path, 60);
+// a URL that authorizes one file for 60 seconds, then dies
+```
+
+*Takeaway: a public bucket is a public URL for every file in it. Private
+KYC/PHI data belongs behind signed URLs, never a permanent public link.*
+
+### 8 — PII over-exposure by `select('*')` · **Medium**
+
+**What the AI shipped.** The Team page renders each teammate's name and role.
+The endpoint behind it does `select('*')` and returns the raw rows.
+
+**The exploit.** The UI shows two columns; the JSON ships the whole table:
+
+```js
+await fetch("/api/team", { headers: { Authorization: `Bearer ${token}` }});
+// team[].ssn_last4      → "4417", "7781", …
+// team[].internal_notes → "On PIP through Q3.", "DEA# on file.", …
+```
+
+SSNs and private HR notes, one devtools tab away, on a page that only ever draws
+a name. (Combined with finding #3, this leaks it across *every* tenant.)
+
+**Why it passed the casual test.** The rendered page looks minimal and correct.
+The over-exposure is entirely in the network response nobody inspects.
+
+**The fix.** Return only what the view needs:
+
+```ts
+await supabase.from("profiles").select("id, full_name, role"); // never select('*')
+```
+
+*Takeaway: your API's contract is the JSON it returns, not the UI that consumes
+it. Project to the columns you actually render.*
+
+## The fix branch: proving it, not just claiming it
+
+Fixing the holes is table stakes. The
+[fixed branch](https://github.com/vandyand/saas-security-teardown/tree/fixed)
+also ships a regression suite that encodes tenant isolation as tests — so the
+fixes can't silently rot:
+
+```
+✓ #1 orgs: anon cannot enumerate tenants
+✓ #2 line_items: anon cannot read invoice detail
+✓ #3 profiles: a member sees only their own org
+✓ #4 service-role key is not in the browser bundle
+✓ #5 admin API: member is forbidden, admin is allowed
+✓ #6 profile: role cannot be changed by the client
+✓ #7 storage: public URL is dead; signed URL works
+✓ #8 team API: no PII columns, own org only
+
+Test Files  1 passed (1)
+     Tests  8 passed (8)
+```
+
+The `main` → `fixed` diff touches ten files: one remediation migration and a
+handful of route and client changes. That small a diff, guarding that much data,
+is the point.
+
+## What this demonstrates
+
+Auditing AI-generated code is my most-recurring line of work, and this is what
+it actually looks like. The failure mode isn't incompetence — the code is
+clean and it runs. It's that AI scaffolding optimizes for *the happy path in a
+single-tenant dev environment*, which is exactly the environment where
+multi-tenant isolation bugs are invisible. Every finding here shipped green.
+
+The value a senior engineer adds is the adversarial second pass: assume the anon
+key is hostile, log in as the wrong tenant, read the network tab, and check the
+*predicate* on every policy — then leave behind tests so it stays fixed. Eight
+findings, one weekend, on an app that looked finished.
