@@ -12,7 +12,7 @@ stack:
   - WebSocket
   - Bitunix API
 links:
-  live: "https://online-rl-btc.vercel.app"
+  live: "https://btc-live.vandykeportfolio.com"
   repo: "https://github.com/vandyand/online-rl-btc-perps"
 hero:
   type: video
@@ -21,7 +21,7 @@ hero:
   alt: "X-ray dashboard of the online RL trading system — feature blocks feeding four neural encoders into a SAC head, with live NAV and training stats"
 featured: true
 order: 2
-outcome: "A reinforcement-learning trading system that does true online learning — 17 live feature blocks, four neural encoders, and a continuous SAC head training on streaming data — shipped as a replayable X-ray dashboard of a real April 2026 paper run, small net loss and all."
+outcome: "A reinforcement-learning trading system that does true online learning — 17 live feature blocks, four neural encoders, and a continuous SAC head training on streaming data — shipped as a live X-ray dashboard streaming the system as it trades 24/7 on a 1Hz-certified box, small net loss and all."
 keywords:
   - reinforcement learning trading
   - soft actor-critic
@@ -74,14 +74,16 @@ loop while it runs against the Bitunix perpetuals API.
 
 ## Outcome
 
-The recorded paper-trading run ended at a **small net loss** — and that's
-displayed on the demo, right in the hero. The point of the project is the
-machinery: genuinely online RL on live, messy, multi-source market data,
-with full visibility into what every component is doing. No cherry-picked
-backtest, no survivorship — a real system on real data, shown as it ran.
+The demo is the **live system itself** — not a backtest, not a recording. It
+runs 24/7 on a Hetzner box: twelve market feeds, the inference tick, and the
+SAC trainer, all under a **1Hz latency certification** (p50 ~400 ms, p99 under
+1.2 s), streaming into the X-ray dashboard over WebSocket. Whatever the NAV
+reads when you open it is what the agent is actually doing right now.
 
-Like Agent World, the live demo is a **zero-backend replay**: every frame
-of the April 2026 run was logged by the real system, and the deployed site
-replays that recording — same dashboard code, no keys, no infrastructure
-to keep alive. The system itself is resurrectable against live exchange
-data; the replay is the honest, permanent artifact of what it did.
+The point of the project is that machinery: genuinely online RL on live, messy,
+multi-source market data, with full visibility into every layer — encoder
+activations, Q-values, actor/critic losses, every fill on the tape, the NAV
+curve. No cherry-picked backtest, no survivorship, no hiding the P&L — a real
+system on real data, shown as it trades, small net loss and all. (An earlier
+recorded April 2026 run remains archived as a replay; the live board is the
+honest, running artifact.)
