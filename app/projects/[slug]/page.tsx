@@ -44,13 +44,40 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
-function Hero({ project }: { project: Project }) {
+function HeroMedia({ project }: { project: Project }) {
   const alt = project.hero.alt ?? `${project.title} — screenshot`;
-
-  if (project.hero.type === "embed") {
-    return <EmberwickEmbed />;
+  if (project.hero.type === "video" && project.hero.video) {
+    return (
+      <VideoHero
+        base={project.hero.video}
+        poster={project.hero.poster ?? `${project.hero.video}/poster.jpg`}
+        alt={alt}
+      />
+    );
   }
+  if (project.hero.poster) {
+    return (
+      <Image
+        src={project.hero.poster}
+        alt={alt}
+        fill
+        priority
+        sizes="(max-width: 1200px) 100vw, 1104px"
+        className="object-cover object-top"
+      />
+    );
+  }
+  return (
+    <span className="absolute inset-0 grid place-items-center font-mono text-kicker uppercase text-ink-faint">
+      {project.title}
+    </span>
+  );
+}
 
+const HERO_FRAME =
+  "relative aspect-video w-full overflow-hidden rounded-card border border-line bg-surface shadow-card";
+
+function Hero({ project }: { project: Project }) {
   // The <video poster> attribute isn't preload-scanned, so without this
   // hint the LCP image starts downloading ~1s late. RSC preload() puts a
   // <link rel="preload"> in the SSR'd <head>.
@@ -61,29 +88,35 @@ function Hero({ project }: { project: Project }) {
     });
   }
 
+  // Interactive embed heroes stay unwrapped; everything else with a live URL
+  // becomes a big click target to the demo.
+  if (project.hero.type === "embed") {
+    return <div className={HERO_FRAME}><EmberwickEmbed /></div>;
+  }
+  if (!project.links.live) {
+    return <div className={HERO_FRAME}><HeroMedia project={project} /></div>;
+  }
+
   return (
-    <div className="relative aspect-video w-full overflow-hidden rounded-card border border-line bg-surface shadow-card">
-      {project.hero.type === "video" && project.hero.video ? (
-        <VideoHero
-          base={project.hero.video}
-          poster={project.hero.poster ?? `${project.hero.video}/poster.jpg`}
-          alt={alt}
-        />
-      ) : project.hero.poster ? (
-        <Image
-          src={project.hero.poster}
-          alt={alt}
-          fill
-          priority
-          sizes="(max-width: 1200px) 100vw, 1104px"
-          className="object-cover object-top"
-        />
-      ) : (
-        <span className="absolute inset-0 grid place-items-center font-mono text-kicker uppercase text-ink-faint">
-          {project.title}
-        </span>
-      )}
-    </div>
+    <a
+      href={project.links.live}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Open the live demo of ${project.title} (opens in a new tab)`}
+      className={`group block cursor-pointer transition-colors hover:border-accent ${HERO_FRAME}`}
+    >
+      <HeroMedia project={project} />
+      {/* darken slightly on hover so the whole image reads as clickable */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-200 group-hover:bg-black/15"
+      />
+      {/* persistent, obvious call-to-action badge */}
+      <span className="pointer-events-none absolute right-3 top-3 inline-flex items-center gap-2 rounded-chip border border-accent/70 bg-surface/85 px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-accent shadow-card backdrop-blur transition-colors group-hover:border-accent group-hover:text-accent-strong">
+        <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
+        Live demo <span aria-hidden="true">↗</span>
+      </span>
+    </a>
   );
 }
 
@@ -143,7 +176,8 @@ export default async function ProjectPage({ params }: Params) {
             {project.links.live && (
               <a
                 href={project.links.live}
-                rel="noopener"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-accent transition-colors hover:text-accent-strong"
               >
                 Live demo <span aria-hidden="true">↗</span>
@@ -152,7 +186,8 @@ export default async function ProjectPage({ params }: Params) {
             {project.links.repo && (
               <a
                 href={project.links.repo}
-                rel="noopener"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-ink-muted transition-colors hover:text-accent"
               >
                 Source <span aria-hidden="true">↗</span>
