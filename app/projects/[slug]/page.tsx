@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import EmberwickEmbed from "@/components/EmberwickEmbed";
 import VideoHero from "@/components/VideoHero";
+import AgenticDemoTabs from "@/components/AgenticDemoTabs";
 import { mdxComponents } from "@/components/mdx";
 import { getAllProjects } from "@/lib/content";
 import type { Project } from "@/lib/content";
@@ -144,12 +145,15 @@ export default async function ProjectPage({ params }: Params) {
       </nav>
 
       {/* ── Hero media ─────────────────────────────────────────── */}
-      <div className="mt-8">
-        <Hero project={project} />
-      </div>
+      {/* Combined multi-demo projects carry their heroes inside the tabs. */}
+      {!project.demos && (
+        <div className="mt-8">
+          <Hero project={project} />
+        </div>
+      )}
 
       {/* ── Title block ────────────────────────────────────────── */}
-      <header className="mt-12 sm:mt-16">
+      <header className={project.demos ? "mt-8" : "mt-12 sm:mt-16"}>
         <p className="font-mono text-xs uppercase tracking-[0.14em] text-ink-faint">
           {project.year} · {project.role}
         </p>
@@ -172,28 +176,34 @@ export default async function ProjectPage({ params }: Params) {
               </li>
             ))}
           </ul>
-          <div className="flex flex-wrap items-center gap-5 font-mono text-kicker uppercase">
-            {project.links.live && (
-              <a
-                href={project.links.live}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-accent transition-colors hover:text-accent-strong"
-              >
-                Live demo <span aria-hidden="true">↗</span>
-              </a>
-            )}
-            {project.links.repo && (
-              <a
-                href={project.links.repo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-ink-muted transition-colors hover:text-accent"
-              >
-                Source <span aria-hidden="true">↗</span>
-              </a>
-            )}
-          </div>
+          {project.demos ? (
+            <span className="font-mono text-kicker uppercase text-ink-faint">
+              Three live demos <span aria-hidden="true">↓</span>
+            </span>
+          ) : (
+            <div className="flex flex-wrap items-center gap-5 font-mono text-kicker uppercase">
+              {project.links.live && (
+                <a
+                  href={project.links.live}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-accent transition-colors hover:text-accent-strong"
+                >
+                  Live demo <span aria-hidden="true">↗</span>
+                </a>
+              )}
+              {project.links.repo && (
+                <a
+                  href={project.links.repo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-ink-muted transition-colors hover:text-accent"
+                >
+                  Source <span aria-hidden="true">↗</span>
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </header>
 
@@ -201,6 +211,9 @@ export default async function ProjectPage({ params }: Params) {
       <article className="mt-12 max-w-3xl sm:mt-14">
         <MDXRemote source={project.body} components={mdxComponents} />
       </article>
+
+      {/* ── Tabbed multi-demo showcase (combined projects) ─────── */}
+      {project.demos && <AgenticDemoTabs demos={project.demos} />}
 
       {/* ── Next / prev project nav ────────────────────────────── */}
       <nav

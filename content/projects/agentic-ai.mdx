@@ -1,0 +1,70 @@
+---
+title: "Agentic AI Systems"
+tagline: "Three live multi-agent apps built on one idea: agents that pass each other strict, schema-validated JSON instead of prose."
+year: 2026
+role: "Design & development"
+stack:
+  - Next.js
+  - TypeScript
+  - OpenAI API
+  - Structured output
+  - JSON Schema
+  - DAG execution
+links:
+  live: "https://multi-agent-research-pipeline.vercel.app"
+hero:
+  type: poster
+  poster: "/heroes/multi-agent-research-pipeline/poster.jpg"
+  alt: "Multi-agent research pipeline UI showing structured findings and a drafted article"
+featured: true
+order: 5
+outcome: "One showcase, three shipped multi-agent systems — a research pipeline that self-revises, a schema-driven workflow DAG, and a routed wellness chat with shared memory — each demonstrating typed, reliable contracts between LLM agents."
+keywords:
+  - agentic AI
+  - multi-agent systems
+  - LLM structured output
+  - AI agent orchestration
+  - JSON schema agents
+  - agent routing
+  - AI workflow orchestration
+  - multi-agent chatbot
+demos:
+  - key: research
+    title: "Multi-Agent Research Pipeline"
+    tagline: "Researcher → Writer → Critic — each hands the next validated JSON, with an automatic revision loop."
+    poster: "/heroes/multi-agent-research-pipeline/poster.jpg"
+    alt: "Research pipeline UI showing structured findings and a drafted article on walk-forward optimization"
+    live: "https://multi-agent-research-pipeline.vercel.app"
+    repo: "https://github.com/vandyand/multi-agent-pipeline-next"
+    highlights:
+      - "Three agents hand each other schema-validated JSON instead of prose — zero mapping code between them."
+      - "The Critic's structured feedback triggers an automatic revision pass before the article is finalized."
+      - "Every step is typed and inspectable: watch findings become a draft, get critiqued, and get rewritten."
+  - key: wellness
+    title: "Multi-Agent Wellness Chatbot"
+    tagline: "A router agent reads each message and hands it to the right specialist — four personas sharing one memory."
+    poster: "/posters/wellness-crew-chat.jpg"
+    alt: "Wellness Crew chat interface with Coach, Chef, Sage, and Doc characters"
+    live: "https://wellness-crew-chat.vercel.app"
+    repo: "https://github.com/vandyand/multi-agent-chatbot-next"
+    highlights:
+      - "A router agent classifies each message and routes it to Coach, Chef, Sage, or Doc — not brittle keyword matching."
+      - "All four personas share one conversation memory, so Coach can reference what Chef just recommended."
+      - "Routing decisions and replies are driven by structured output, so the hand-offs stay reliable."
+  - key: workflow
+    title: "Agentic Workflow Engine"
+    tagline: "HTTP calls, transforms, and LLM steps chained as a typed DAG that resolves and retries itself."
+    poster: "/heroes/agentic-workflow-engine/poster.jpg"
+    alt: "Workflow engine UI showing an arXiv search DAG executed successfully with per-node details"
+    live: "https://agentic-workflow-engine.vercel.app"
+    repo: "https://github.com/vandyand/agentic-workflow-engine-next"
+    highlights:
+      - "Every step declares typed inputs and outputs up front; the runner resolves the DAG by topological order."
+      - "Chains HTTP calls, data transforms, and LLM steps into one graph — with retries on failure."
+      - "Per-node inspection shows exactly what each step received and produced."
+---
+
+All three of these are multi-agent LLM apps, and they lean on the same trick:
+agents that communicate through **strict JSON-schema contracts** rather than
+free-form prose. That is what makes them reliable enough to chain, route, and
+revise without a tangle of glue code. Each one is live — switch between them below.

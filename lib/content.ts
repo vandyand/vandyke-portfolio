@@ -24,6 +24,19 @@ const heroSchema = z.object({
   alt: z.string().optional(),
 });
 
+/** One sub-demo inside a combined, tabbed project (e.g. "Agentic AI"). */
+const demoSchema = z.object({
+  key: z.string(),
+  title: z.string().min(1),
+  tagline: z.string().min(1),
+  poster: z.string(),
+  alt: z.string().optional(),
+  live: z.string().url(),
+  repo: z.string().url().optional(),
+  highlights: z.array(z.string()).default([]),
+});
+export type Demo = z.infer<typeof demoSchema>;
+
 export const projectSchema = z.object({
   slug: z.string().regex(/^[a-z0-9-]+$/),
   title: z.string().min(1),
@@ -42,6 +55,9 @@ export const projectSchema = z.object({
   order: z.number().int().default(99),
   outcome: z.string().min(1),
   keywords: z.array(z.string()).default([]),
+  /** When present, the case-study page renders a tabbed multi-demo showcase
+   *  instead of a single hero + body. */
+  demos: z.array(demoSchema).optional(),
 });
 
 export type ProjectFrontmatter = z.infer<typeof projectSchema>;

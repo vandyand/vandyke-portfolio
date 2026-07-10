@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
        app/globals.css). */
     viewTransition: true,
   },
+  // The three standalone agentic demos were merged into one tabbed showcase.
+  async redirects() {
+    return ["agentic-workflow-engine", "multi-agent-research-pipeline", "wellness-crew-chat"].map(
+      (slug) => ({ source: `/projects/${slug}`, destination: "/projects/agentic-ai", permanent: true }),
+    );
+  },
 };
 
 export default nextConfig;
