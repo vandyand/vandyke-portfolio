@@ -134,13 +134,21 @@ export default async function ProjectPage({ params }: Params) {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-6 pb-24 pt-10 sm:pt-14">
-      {/* ── Breadcrumb ─────────────────────────────────────────── */}
-      <nav aria-label="Breadcrumb">
+      {/* ── Breadcrumb + quick next ────────────────────────────── */}
+      <nav aria-label="Breadcrumb" className="flex items-center justify-between gap-4">
         <Link
           href="/projects"
           className="inline-flex items-center gap-1.5 font-mono text-kicker uppercase text-ink-faint transition-colors hover:text-accent"
         >
           <span aria-hidden="true">←</span> All projects
+        </Link>
+        <Link
+          href={`/projects/${next.slug}`}
+          rel="next"
+          title={`Next: ${next.title}`}
+          className="inline-flex items-center gap-1.5 font-mono text-kicker uppercase text-ink-faint transition-colors hover:text-accent"
+        >
+          Next <span aria-hidden="true">→</span>
         </Link>
       </nav>
 

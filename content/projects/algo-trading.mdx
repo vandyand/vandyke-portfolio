@@ -1,0 +1,58 @@
+---
+title: "Algorithmic Trading Dashboards"
+tagline: "Two views of one quant-trading stack — live performance across four systems, and the out-of-sample walk-forward backtests behind the models."
+year: 2026
+role: "Trading systems & full-stack development"
+stack:
+  - Next.js
+  - TypeScript
+  - Python
+  - PyTorch
+  - Recharts
+  - OANDA / Alpaca
+links:
+  live: "https://avd-trading-dashboard.vercel.app"
+hero:
+  type: poster
+  poster: "/heroes/avd-trading-dashboard/poster.jpg"
+  alt: "Algorithmic trading dashboard with NAV curves, daily returns, and risk metrics"
+featured: false
+order: 5
+outcome: "A live-performance dashboard tracking four algorithmic systems (forex, equities, crypto, prediction markets) with NAV, Sharpe/Sortino and drawdown — paired with a walk-forward optimization dashboard where every equity curve is out-of-sample, not curve-fit."
+keywords:
+  - algorithmic trading dashboard
+  - walk-forward optimization
+  - out-of-sample backtest
+  - reinforcement learning trading
+  - TCN time-series model
+  - quantitative trading metrics
+  - OANDA forex trading
+  - Alpaca equities API
+demos:
+  - key: performance
+    title: "Live Performance Dashboard"
+    tagline: "Four live algorithmic systems — forex, equities, crypto, and prediction markets — with NAV, Sharpe, and drawdown."
+    poster: "/heroes/avd-trading-dashboard/poster.jpg"
+    alt: "Trading dashboard with NAV curves, daily returns, and risk metrics"
+    live: "https://avd-trading-dashboard.vercel.app"
+    repo: "https://github.com/vandyand/trade-performance-dashboard"
+    highlights:
+      - "One dashboard tracks four independent systems across forex, equities, crypto, and prediction markets."
+      - "NAV curves, Sharpe/Sortino, drawdown, and open positions — the metrics that actually matter."
+      - "Powered by TCN + Actor-Critic RL models with daily position sizing."
+  - key: wfo
+    title: "Walk-Forward Optimization"
+    tagline: "Out-of-sample backtests — TCN, MLP, and rule-based strategies compared honestly."
+    poster: "/posters/algo-trading-wfo-dashboard.jpg"
+    alt: "Walk-forward optimization dashboard with out-of-sample equity curves and strategy comparison table"
+    live: "https://algo-trading-wfo-dashboard.vercel.app"
+    repo: "https://github.com/vandyand/algo-trading-wfo-dashboard-next"
+    highlights:
+      - "Every equity curve is out-of-sample: models train on a rolling window, tested only on the next unseen period."
+      - "TCN, MLP, and rule-based strategies compared side by side — no curve fitting."
+      - "Results reflect real trading conditions, not an over-optimized backtest."
+---
+
+Two views of the same quant-trading stack: a live dashboard tracking four systems
+in production, and the **walk-forward optimization** behind the models — where every
+backtest is out-of-sample, not curve-fit. Both are live.

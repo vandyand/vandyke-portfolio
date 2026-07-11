@@ -7,10 +7,14 @@ const nextConfig: NextConfig = {
        app/globals.css). */
     viewTransition: true,
   },
-  // The three standalone agentic demos were merged into one tabbed showcase.
+  // Standalone demos that were merged into tabbed showcases.
   async redirects() {
-    return ["agentic-workflow-engine", "multi-agent-research-pipeline", "wellness-crew-chat"].map(
-      (slug) => ({ source: `/projects/${slug}`, destination: "/projects/agentic-ai", permanent: true }),
+    const merged: Record<string, string[]> = {
+      "agentic-ai": ["agentic-workflow-engine", "multi-agent-research-pipeline", "wellness-crew-chat"],
+      "algo-trading": ["algo-trading-wfo-dashboard", "avd-trading-dashboard"],
+    };
+    return Object.entries(merged).flatMap(([dest, slugs]) =>
+      slugs.map((slug) => ({ source: `/projects/${slug}`, destination: `/projects/${dest}`, permanent: true })),
     );
   },
 };
