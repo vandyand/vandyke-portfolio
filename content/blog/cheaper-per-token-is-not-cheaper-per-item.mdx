@@ -1,0 +1,52 @@
+---
+title: "A cheaper model per token is not a cheaper model per item"
+excerpt: "I spent a month testing a fast, cheap decision model as the core of a web-watching agent. It lost on every real task. The useful result was an architecture that barely needs a model at all."
+published: 2026-09-28
+tags:
+  - AI engineering
+  - Agents
+  - Research methodology
+---
+
+For the past month I have been testing Jev, TypeSafe's decision model on OpenRouter, as the engine for a persistent agent that watches websites and tells me what changed. Jev is not a chat model. You give it some state and a set of finite questions, such as pick one of these options or give a probability, and it answers in well under a second at a very low price per token. On paper that is exactly what an agent making thousands of small judgments needs.
+
+The early work used small synthetic worlds that I built for the purpose. They were rigorously controlled and cost fractions of a cent to run, but they could not answer the question I actually cared about: does this hold up on the messy, real web? So I switched to live public pages and a strict rule. Every task is scored against ground truth from the site's own API, and every result is compared with a strong, cheap general model, in this case gpt-6-luna, costing $0.10 per million input tokens.
+
+Five experiments later, the answer was clear, and it was not the one I expected.
+
+## Reading pages: the whole beats the parts
+
+The first task was perception. I captured GitHub issue lists, Hacker News, Lobsters and GitLab through a headless browser, split each page into its visible text blocks, and asked for each block's role: item title, author, tag, or everything else.
+
+Jev classified the blocks one at a time and found nearly every title. The trouble was that on GitHub it also labeled navigation links, page headers and pinned issues as titles, so only 39 to 63 percent of its title calls were correct. A general model that read the whole page in one call scored 0.968 overall. Classifying blocks one at a time cannot see the pattern that repeats for every item on the page, and that pattern is most of the signal.
+
+## Compile once, run for free
+
+The most useful result came from a different idea. Instead of asking a model to read every page, I asked it to look at one page once and write an extractor: a small, structured set of rules describing how that site renders its titles, authors and tags. Ordinary code then applies those rules to every later visit, with no model calls at all.
+
+On list and table layouts this matched the whole-page model on title accuracy. Extractors compiled on the first capture of each site still scored perfectly on two later captures, with no further model calls. On sites built from generic cards instead of lists it failed at first, because nothing marked where one item ended and the next began. I fixed that by detecting repeated sibling elements in the page structure, which took Stack Overflow from 0.12 to 1.0. After that, compiled extractors tied the whole-page model on titles across all twelve pages I tested, at roughly a quarter to a third of the first-visit cost and nothing on revisits.
+
+Two ideas that sounded good did not help. Letting the model repair its own rules without labels made results slightly worse, because it could not tell which version was better. Using Jev to judge whether extracted records looked right was accurate on average, but as a hard filter it discarded every record from entire sites it had not seen before.
+
+## Triage: the reversal that mattered
+
+Jev's best chance looked like triage. Given only an item's title, predict its labels: whether a Python issue concerns the interpreter core, whether a Rust issue is a compiler bug. On a first set of 464 items Jev nearly tied the general model, 0.551 against 0.560, at 63 percent of the cost. That looked promising.
+
+So I ran it properly. I pulled 2,280 items from six sites, fixed the label-selection rule before any model saw the data, and excluded workflow labels such as "needs triage" that no title can predict. At that scale the general model won 0.614 to 0.565, leading on five of six sites, and Jev was only 31 percent cheaper. Adding model-written descriptions of each label made Jev worse.
+
+The small sample had been flattering. It is the same lesson as in my trading research: a result on a few hundred items is a claim, not a finding.
+
+## Why the price gap disappeared
+
+Jev's input tokens are cheaper than gpt-6-luna's, roughly 40 percent of the price. But the general model can classify forty items in a single structured call. Jev's decision interface takes at most sixteen questions per request and resends the shared context each time. Measured per item, which is the unit that actually matters, the gap shrank to 0.6 to 0.7 times the cost, and it came with lower quality.
+
+Jev's probabilities do rank items well, and its answers come back fast. Those advantages matter when decisions must be made one at a time and cannot be batched. Watching websites is not that kind of workload.
+
+## What I am keeping
+
+- **Compiled extractors.** Pay a model once to write the rules, then run them for free until the site changes. On this workload, that pattern beat calling any model on every visit, however cheap.
+- **Persistent item memory.** A small database of what the agent has seen, with stable identities taken from item links. It detected new items with perfect precision and 0.75 recall across three captures. Those captures were only about an hour apart, so the longer-term test is still ahead.
+- **Measuring per item, not per token.** Price per token is the number on the pricing page. Cost per useful decision, at the quality you need, is the number that decides the architecture.
+- **Large samples, fixed rules, and a strong cheap baseline.** Without the second, larger run I would have written up the near-tie as a win.
+
+The full series cost about fifty-six cents in model calls. The expensive part, as usual, was deciding which result to believe.
