@@ -15,7 +15,7 @@ export default function AgenticDemoTabs({ demos }: { demos: Demo[] }) {
 
   return (
     <section aria-label="Live demos" className="mt-10">
-      {/* master header — tabs */}
+      {/* Master header and tabs. */}
       <div role="tablist" aria-label="Choose a demo" className="flex flex-wrap gap-x-1 gap-y-2 border-b border-line">
         {demos.map((d, i) => (
           <button

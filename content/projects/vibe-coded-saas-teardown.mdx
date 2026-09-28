@@ -1,6 +1,6 @@
 ---
 title: "The Vibe-Coded SaaS Teardown"
-tagline: "I let AI scaffold a multi-tenant SaaS, then audited it like a senior engineer — and found eight ways it would leak one customer's data to another."
+tagline: "I let AI scaffold a multi-tenant SaaS, audited it, and found eight ways one customer could read another customer's data."
 year: 2026
 role: "Security audit, exploit development & remediation"
 stack:
@@ -17,7 +17,7 @@ hero:
   poster: "/posters/vibe-coded-saas-teardown.png"
   alt: "A deliberately vulnerable Practice Portal SaaS with a red 'intentionally vulnerable demo' banner, alongside a terminal running eight exploits."
 featured: true
-order: 3
+order: 5
 outcome: "A realistic AI-built B2B SaaS with eight planted-but-real vulnerabilities, a reproducible exploit for each (anon key reads every tenant; a member escalates to admin; patient PHI downloads with no auth), and a fixed branch whose 8/8 regression tests prove tenant isolation holds. The diff is the audit."
 keywords:
   - supabase security

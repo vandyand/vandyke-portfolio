@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Lets CI or a local verification run use an isolated cache when a stale
+  // Windows file handle prevents Next from replacing the default `.next` dir.
+  distDir: process.env.NEXT_DIST_DIR ?? ".next",
   experimental: {
     /* React <ViewTransition> — cross-fade between routes (wired in
        app/layout.tsx; duration + reduced-motion off-switch live in

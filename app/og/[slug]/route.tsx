@@ -9,7 +9,7 @@ export function generateStaticParams() {
 
 /**
  * Fetch a Google-hosted font subset for exactly the glyphs we render.
- * Build-time only (route is force-static). Failure is non-fatal — the
+ * Build-time only (route is force-static). Failure is non-fatal; the
  * card falls back to next/og's bundled sans.
  */
 async function loadGoogleFont(
@@ -24,7 +24,7 @@ async function loadGoogleFont(
     }${weight}`;
     const css = await fetch(
       `https://fonts.googleapis.com/css2?family=${fam}&text=${encodeURIComponent(text)}`,
-      // A UA that gets TTF/OTF back (not woff2 — satori can't parse woff2).
+      // A UA that gets TTF/OTF back (not woff2, which satori cannot parse).
       { headers: { "User-Agent": "Mozilla/5.0 (compatible; satori)" } },
     ).then((r) => r.text());
     const url = css.match(/src: url\((.+?)\) format\('(?:opentype|truetype)'\)/)?.[1];
@@ -43,7 +43,7 @@ export async function GET(
   const project = getAllProjects().find((p) => p.slug === slug);
   if (!project) return new Response("Not found", { status: 404 });
 
-  const kicker = `${project.year} · Andrew Van Dyke`;
+  const kicker = `${project.year} · Andrew VanDyke`;
   const stack = project.stack.slice(0, 5);
   const displayText = project.title;
   const monoText = `${kicker}${stack.join("")}vandykeportfolio.com`;

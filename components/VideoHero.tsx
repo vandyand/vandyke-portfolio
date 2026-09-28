@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 type VideoHeroProps = {
-  /** Base dir under /public, e.g. "/heroes/agent-world" —
+  /** Base dir under /public, e.g. "/heroes/agent-world",
    *  expects cover.webm + cover.mp4 inside. */
   base: string;
   poster: string;
@@ -11,14 +11,14 @@ type VideoHeroProps = {
 };
 
 /**
- * Case-study video hero — a 5s seamless loop delivered as
+ * Case-study video hero, a 5s seamless loop delivered as
  * poster + webm + mp4.
  *
  * - `preload="none"` + poster attr: first paint is always the static
  *   poster, zero video bytes until needed.
  * - IntersectionObserver starts playback only when scrolled into view,
  *   and pauses again off-screen.
- * - `prefers-reduced-motion`: playback is never started — the element
+ * - `prefers-reduced-motion`: playback is never started, and the element
  *   stays a static poster.
  */
 export default function VideoHero({ base, poster, alt }: VideoHeroProps) {

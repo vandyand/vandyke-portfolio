@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 function HeroMedia({ project }: { project: Project }) {
-  const alt = project.hero.alt ?? `${project.title} — screenshot`;
+  const alt = project.hero.alt ?? `${project.title} screenshot`;
   if (project.hero.type === "video" && project.hero.video) {
     return (
       <VideoHero
@@ -128,7 +128,7 @@ export default async function ProjectPage({ params }: Params) {
   if (index === -1) notFound();
 
   const project = projects[index];
-  // Cyclic next/prev — the archive is a loop, never a dead end.
+  // Cyclic next/prev keeps the archive from ending in a dead end.
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
 

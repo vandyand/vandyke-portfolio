@@ -1,0 +1,39 @@
+---
+title: "A trading dashboard should tell the truth about its data"
+excerpt: "The hard part of a performance dashboard is not drawing a chart. It is making the chart mean exactly what the label says."
+published: 2026-08-17
+tags:
+  - System design
+  - Trading tools
+  - Data engineering
+---
+
+A dashboard can look live while quietly showing an old snapshot. It can also put several account types on one screen and make them appear equivalent when they are not. Both mistakes make the interface less useful precisely when someone needs it most.
+
+While rebuilding my trading dashboard, I treated the data contract as the main feature. The visual layer came after the questions behind each number had clear answers: where did it come from, when was it collected, and what kind of result does it represent?
+
+## Start with the account label
+
+The dashboard follows Alpaca paper equities, OANDA practice forex, and a live Kalshi prediction-market account. They belong in the same workspace because I use the same system to inspect them. They should not be described as the same thing.
+
+Each account now carries its actual mode in the interface. That is a small copy decision with a big effect: a paper result is a test result, while a live account includes the consequences of real fills and real capital. Neither label is a forecast or an endorsement.
+
+## Use the right history for the instrument
+
+For Alpaca and OANDA, a periodic account-value snapshot is useful. Positions can stay open for a while, so a fifteen-minute net asset value series shows the shape of the account between trades.
+
+Kalshi needs a different view. A contract usually resolves quickly, and an open contract is not a completed result. Its primary history is therefore built from closed contracts, ordered by settlement. The page can still show cash and current position value as a present-tense account snapshot, but it does not mix those values into the realized-result chart.
+
+That distinction also explains why a trade-based graph and a time-based graph answer different questions. One shows the sequence of settled outcomes. The other shows when those outcomes happened. Neither is better in isolation.
+
+## Collect often, publish safely
+
+The collector runs away from the browser and fetches broker data on a schedule. It writes a small, sanitized data artifact for the public dashboard, then the website reads that artifact instead of reaching for broker credentials.
+
+This keeps account secrets out of the client and gives the interface one source of truth. A visible freshness timestamp matters as much as the line chart. If the collector fails, the dashboard should say the data is stale instead of pretending otherwise.
+
+## The chart is the last step
+
+Once the account mode, valuation method, and collection cadence are explicit, sorting a positions chart from winners to losers becomes a useful choice instead of a cosmetic one. The user can see what is working, what is not, and what the chart is actually measuring.
+
+That is the standard I want for any operational dashboard: the shortest path from a visual number to an honest explanation of how it was made.

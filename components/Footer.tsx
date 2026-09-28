@@ -27,7 +27,7 @@ export default function Footer() {
           </a>
         </div>
         <p className="text-sm text-ink-faint">
-          Built with Next.js — designed &amp; built by me.{" "}
+          Built with Next.js and designed by me.{" "}
           <a
             href={site.sourceRepo}
             className="underline decoration-line-strong underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"

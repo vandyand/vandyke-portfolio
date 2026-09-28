@@ -1,8 +1,10 @@
 # vandykeportfolio.com — portfolio site
 
-Personal portfolio of Andrew Van Dyke. Next.js 16 (App Router, fully static) · Tailwind 4 · MDX · dual light/dark theming.
+Personal portfolio of Andrew VanDyke. Next.js 16 (App Router) · Tailwind 4 · MDX · dual light/dark theming.
 
-**Live:** https://vandyke-portfolio.vercel.app (pending domain cutover to vandykeportfolio.com)
+The durable experience and navigation decisions are documented in [DESIGN.md](DESIGN.md).
+
+**Live:** https://www.vandykeportfolio.com
 
 ## Stack
 
@@ -16,6 +18,8 @@ Personal portfolio of Andrew Van Dyke. Next.js 16 (App Router, fully static) · 
 ## Editing content
 
 Add a project: create `content/projects/<slug>.mdx` with frontmatter (see any existing file for the schema: title, tagline, year, role, stack, links, hero, featured, order, outcome, keywords) and a body with `## Problem`, `## What I built`, `## Outcome`. The archive, sitemap, OG image, and next/prev nav pick it up automatically.
+
+Add a blog post: create `content/blog/<slug>.mdx` with `title`, `excerpt`, `published` (`YYYY-MM-DD`), `tags`, and an optional `draft: true`. Published posts appear at `/blog`, receive their own static route, and are added to the sitemap. The signup form posts only to Resend; set `RESEND_API_KEY` and `RESEND_BLOG_SEGMENT_ID` in Vercel. Use the dedicated **Vandyke Portfolio Blog** segment when sending a new-post broadcast.
 
 Regenerate a video hero: screenshot the demo (16:9 crop) → host publicly (this project's prod deploy works: drop in `public/stills/`, `vercel deploy --prod`) → submit via `~/ascolais` `dev/kling.clj` (`submit-clip!` with the same URL as first+last frame, 5s, std tier ≈ $0.42) → `ffmpeg -i in.mp4 -an -c:v libvpx-vp9 -crf 34 cover.webm` + poster jpg → `public/heroes/<slug>/`.
 

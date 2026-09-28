@@ -7,7 +7,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "Case studies and live demos — LLM agent systems, algorithmic trading dashboards, and full-stack products, all shipped and running.",
+    "Case studies and running demos for LLM agent systems, paper-trading dashboards, and full-stack products.",
   alternates: { canonical: `${site.url}/projects` },
 };
 
@@ -21,8 +21,8 @@ export default function ProjectsPage() {
         Work<em className="text-accent">.</em>
       </h1>
       <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-muted">
-        Every project here is live — click through for the case study, or go
-        straight to the running demo.
+        These are things I&rsquo;ve built and kept online. Read the case study for
+        the context, or go straight to the demo.
       </p>
 
       {/* ── Featured grid ────────────────────────────────────── */}

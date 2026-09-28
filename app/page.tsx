@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import EmberwickEmbed from "@/components/EmberwickEmbed";
 import { getFeaturedProjects } from "@/lib/content";
+import { specialties } from "@/lib/specialties";
 import {
   clientEndorsements,
   proofStats,
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${site.url}/` },
 };
 
-/** JSON-LD Person schema — who this site is about, machine-readable. */
+/** JSON-LD Person schema for this site. */
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
@@ -50,56 +50,59 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
       />
       {/* ── Hero ─────────────────────────────────────────────── */}
-      <section className="mx-auto w-full max-w-6xl px-6 pt-16 sm:pt-24">
-        <p className="inline-flex items-center gap-2.5 rounded-full border border-line bg-surface px-3.5 py-1.5 font-mono text-xs uppercase tracking-[0.14em] text-ink-muted">
-          <span className="relative flex h-2 w-2" aria-hidden="true">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 motion-safe:animate-ping" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
-          </span>
-          Available for new projects
-        </p>
-
-        <h1 className="mt-8 max-w-3xl font-display text-display text-ink">
-          Agentic systems and trading infrastructure,{" "}
-          <em className="text-accent">built to ship</em>.
-        </h1>
-        <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-muted">
-          Senior full-stack engineer working across LLM agent orchestration,
-          algorithmic trading, and production web apps — every project below
-          is live, not a mockup.
-        </p>
-
-        <div className="mt-8 flex flex-wrap items-center gap-4">
-          <a
-            href={`mailto:${socials.email}`}
-            className="inline-flex items-center rounded-chip bg-accent px-5 py-3 font-mono text-kicker uppercase text-accent-ink transition-colors hover:bg-accent-strong"
-          >
-            Email me
-          </a>
-          <a
-            href={UPWORK_PROFILE_URL}
-            rel="noopener"
-            className="inline-flex items-center gap-1.5 rounded-chip border border-line-strong px-5 py-3 font-mono text-kicker uppercase text-ink transition-colors hover:border-accent hover:text-accent"
-          >
-            Hire me on Upwork
-            <span aria-hidden="true">→</span>
-          </a>
-        </div>
-
-        {/* The flagship demo IS the hero visual. */}
-        <div className="mt-14 sm:mt-16">
-          <EmberwickEmbed />
-          <p className="mt-4 text-sm leading-relaxed text-ink-muted">
-            <strong className="font-medium text-ink">Emberwick</strong> — six
-            LLM agents living in a simulated town. This is a real recording.{" "}
-            <Link
-              href="/projects/agent-world"
-              className="whitespace-nowrap text-accent underline decoration-accent/40 underline-offset-4 transition-colors hover:decoration-accent"
-            >
-              Read the case study →
-            </Link>
+      <section className="mx-auto grid w-full max-w-6xl items-center gap-12 px-6 pt-16 sm:pt-24 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16">
+        <div>
+          <p className="inline-flex items-center gap-2.5 rounded-full border border-line bg-surface px-3.5 py-1.5 font-mono text-xs uppercase tracking-[0.14em] text-ink-muted">
+            <span className="relative flex h-2 w-2" aria-hidden="true">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 motion-safe:animate-ping" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+            </span>
+            Available for new projects
           </p>
+
+          <h1 className="mt-8 max-w-3xl font-display text-display text-ink">
+            Agent systems, trading tools, and web apps,{" "}
+            <em className="text-accent">built with care</em>.
+          </h1>
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-muted">
+            I&rsquo;m a full-stack engineer working on LLM agent workflows,
+            paper-trading systems, and production web apps. The projects below
+            are running demos and real things I&rsquo;ve built.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <a
+              href={`mailto:${socials.email}`}
+              className="inline-flex items-center rounded-chip bg-accent px-5 py-3 font-mono text-kicker uppercase text-accent-ink transition-colors hover:bg-accent-strong"
+            >
+              Email me
+            </a>
+            <a
+              href={UPWORK_PROFILE_URL}
+              rel="noopener"
+              className="inline-flex items-center gap-1.5 rounded-chip border border-line-strong px-5 py-3 font-mono text-kicker uppercase text-ink transition-colors hover:border-accent hover:text-accent"
+            >
+              Hire me on Upwork
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
         </div>
+
+        <figure className="mx-auto w-full max-w-sm overflow-hidden rounded-card border border-line bg-surface shadow-card lg:mx-0">
+          <div className="relative aspect-square">
+            <Image
+              src="/about/andrew-headshot.png"
+              alt="Andrew VanDyke"
+              fill
+              priority
+              sizes="(max-width: 1024px) min(100vw - 3rem, 24rem), 22rem"
+              className="object-cover object-[50%_35%]"
+            />
+          </div>
+          <figcaption className="border-t border-line px-4 py-3 font-mono text-xs uppercase tracking-[0.12em] text-ink-muted">
+            Andrew VanDyke · Full-stack engineer
+          </figcaption>
+        </figure>
       </section>
 
       {/* ── Proof bar ────────────────────────────────────────── */}
@@ -119,6 +122,37 @@ export default function Home() {
             </div>
           ))}
         </dl>
+      </section>
+
+      {/* ── Practice areas ──────────────────────────────────── */}
+      <section
+        aria-label="Practice areas"
+        className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-24"
+      >
+        <h2 className="font-mono text-kicker uppercase text-ink-faint">
+          Find the relevant work
+        </h2>
+        <p className="mt-4 max-w-2xl text-lg leading-relaxed text-ink-muted">
+          Start with the kind of problem you&rsquo;re solving, then explore the
+          applications and case studies behind it.
+        </p>
+        <div className="mt-8 grid gap-5 md:grid-cols-3">
+          {specialties.map((specialty) => (
+            <Link
+              key={specialty.slug}
+              href={`/${specialty.slug}`}
+              className="reveal lift rounded-card border border-line bg-surface p-6 shadow-card transition-colors hover:border-accent"
+            >
+              <p className="font-display text-2xl text-ink">{specialty.title}</p>
+              <p className="mt-3 text-sm leading-relaxed text-ink-muted">
+                {specialty.description}
+              </p>
+              <span className="mt-5 inline-block font-mono text-kicker uppercase text-accent">
+                Explore <span aria-hidden="true">→</span>
+              </span>
+            </Link>
+          ))}
+        </div>
       </section>
 
       {/* ── Selected work ────────────────────────────────────── */}
@@ -272,7 +306,7 @@ export default function Home() {
                 </blockquote>
                 <figcaption className="mt-4 font-mono text-kicker uppercase text-ink-faint">
                   {t.author}
-                  {t.role ? ` — ${t.role}` : ""}
+                  {t.role ? ` | ${t.role}` : ""}
                 </figcaption>
               </figure>
             ))}
@@ -290,9 +324,9 @@ export default function Home() {
           Have something <em className="text-accent">to build?</em>
         </h2>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-muted">
-          Tell me what you&rsquo;re trying to ship — an agent pipeline, a
-          trading system, a product that&rsquo;s stuck. I&rsquo;ll tell you
-          honestly whether I&rsquo;m the right person for it.
+          Tell me what you&rsquo;re trying to build, whether it&rsquo;s an agent
+          workflow, a trading tool, or a product that has gotten stuck. I&rsquo;ll
+          be straightforward about whether I can help.
         </p>
         <div className="mt-9 flex flex-wrap items-center gap-4">
           <a

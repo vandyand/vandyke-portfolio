@@ -1,0 +1,112 @@
+---
+title: "The Evolving Gallery"
+tagline: "An AI art gallery where artist agents are guarded, judged, and improved across generations. Underneath, it is an evaluation harness with an optimization loop."
+year: 2026
+role: "Design, architecture & implementation"
+stack:
+  - Next.js
+  - TypeScript
+  - OpenRouter
+  - Claude Haiku
+  - SVG
+  - Evolutionary optimization
+  - Vercel
+links:
+  live: "https://the-evolving-gallery.vercel.app"
+hero:
+  type: poster
+  poster: "/posters/the-evolving-gallery.png"
+  alt: "The Evolving Gallery, a dark museum-style wall of AI-generated SVG art with eight generations, mean fitness, and total spend."
+featured: false
+draft: true
+order: 8
+outcome: "A gallery of 64 AI-generated pieces across eight generations. Each passes a deterministic safety check, is scored by a three-provider vision panel, and feeds a critic-steered optimizer. The run raised mean critic score from 5.4 to 6.5 while tracking $1.58 in token cost."
+keywords:
+  - AI agent evaluation
+  - LLM eval harness
+  - evolutionary optimization
+  - AI art generation
+  - agent orchestration
+  - LLM judge panel
+  - vision model judging
+  - AI code reliability
+  - SVG generation
+  - cost-aware AI
+---
+
+## The disguise
+
+On the surface this is an art gallery: a wall of generative pieces, each with a
+name, a fitness score, and four AI critics arguing about it. Hit **Evolve** and
+the art visibly improves generation over generation; trace any masterpiece's
+family tree back to its gen‑0 ancestors.
+
+Underneath, it's the machinery that keeps real AI agents from silently rotting:
+a measurement harness, deterministic guardrails, an LLM judge panel, and a
+human‑in‑the‑loop optimization loop. I built it on art instead of a boring
+enterprise workflow so it's actually memorable — but every competency on display
+is the one the hard AI jobs are really asking for.
+
+## One generation, end to end
+
+Each **artist** is an LLM with an evolving *style genome* — a natural‑language
+aesthetic ("brutalist geometric forms in a muted 4‑color palette with heavy
+negative space") plus a few numeric knobs. A generation runs four stages:
+
+1. **Generate.** Every artist writes a self‑contained SVG.
+2. **Guard — the reliability layer, made literal.** Each SVG runs a deterministic
+   gauntlet: parses as XML? no `<script>`, event handlers, external URLs, or
+   `foreignObject`? enough drawable shapes? under 50&nbsp;KB? survives a DOMPurify
+   sanitize? renders headless (resvg) without error? A failure is disqualified
+   **with a reason** and sent to the *rejected sketches* drawer. This is the "AI
+   code that silently breaks" story, caught and shown instead of hidden.
+3. **Judge.** Survivors are rasterized and scored by a panel of AI critics across
+   **three providers** (Claude Haiku, Gemini Flash, GPT‑4o‑mini) — genuinely
+   different eyes, each rating one lens 0–10 with a one‑line verdict.
+4. **Evolve.** Fitness (a transparent blend of critics, human votes, and a
+   novelty bonus) selects the fittest; their genomes are mutated and cross‑bred
+   into the next population.
+
+## The part a pure eval harness never has
+
+Measurement alone tells you *whether* an agent got worse. The interesting half is
+closing the loop so it gets *better*. The optimizer here does that with one
+honest trick: **the critics' feedback steers the artists.** When an artist
+survives or mutates, it repaints while *seeing its own previous critiques* —
+"composition faulted this for X; address it." That's the measure→improve loop, in
+context.
+
+It works, and the numbers are real, not staged. Across a live 8‑generation run:
+
+- **Critic quality climbed 5.4 → 6.5** as artists refined on feedback.
+- **Novelty declined 4.2 → 3.0** — honestly, because the population *converged*
+  on winning styles (the classic exploration/exploitation tension, shown rather
+  than hidden).
+- **64 pieces generated, 2 rejected** by the guard, **$1.58 total** — every call
+  metered.
+
+## Cost, measured — not asserted
+
+Cheap models by default. To prove the expensive tier earns its place, I ran the
+same seed genomes on Claude Haiku and Claude Sonnet and judged both: Sonnet buys
+about **+0.4 quality for 2× the cost**. So the gallery defaults to Haiku — a
+decision made from a measurement, not a vibe. That honesty about the
+cost↔quality tradeoff is the whole point.
+
+## How it's built
+
+- **Frontend:** Next.js 15 (App Router, TypeScript) on Vercel — a museum‑styled
+  masonry wall, per‑piece critic panels and fitness breakdowns, an interactive
+  *Evolve* theatre where the fitness curve draws generation by generation, a
+  lineage family tree, and the rejected‑sketches drawer.
+- **Engine:** a TypeScript pipeline over **OpenRouter** (one key, many models):
+  artist runner with per‑call cost accounting, the guard (DOMPurify + resvg), the
+  vision judge panel, structural‑novelty scoring, and the critic‑steered
+  evolution engine. It runs offline and commits real, static data so the wall is
+  full on first paint — the art you see was really generated and really judged.
+
+The measurement half is a clean‑room, public rebuild of a private agent‑eval
+engine I'd already built (deterministic asserts, a live cost table, run
+persistence, generation‑to‑generation A/B compare). This project adds the
+optimization loop that one never had — and dresses the whole thing in something
+people actually want to look at.

@@ -1,0 +1,61 @@
+---
+title: "A backtest result is a claim, not a finding"
+excerpt: "The expensive mistakes in my trading research were never bad ideas. They were good-looking numbers that passed every check I had, until I added the one that killed them."
+published: 2026-08-17
+tags:
+  - Research methodology
+  - Quantitative finance
+  - Statistics
+---
+
+A strategy that loses money in a backtest is cheap. You see the number, you drop the idea, you move on. The costly result is the one that looks right. It survives the checks you thought to run, it lines up with a story you find plausible, and it stays alive long enough that you start building on top of it.
+
+I keep a ledger of every hypothesis I have tested, each with a verdict: tradeable, real but uncapturable, or rejected. Most entries are rejections. The rejections are the point. What follows is the set of checks that produced them, and two findings that passed almost all of those checks before dying.
+
+## The failure mode is confirmation, not error
+
+Arithmetic mistakes announce themselves. The dangerous case is a pipeline that is working exactly as written and answering a subtly different question than the one you asked. The output is internally consistent, so nothing looks broken, and every robustness check you run inherits the same flaw.
+
+That means robustness cannot be additive. Running five variants of the same test tells you the result is stable under those five variants, not that it is real.
+
+## The gate
+
+Every hypothesis clears all of these before it earns a dollar. Each rule exists because a specific mistake got past a weaker version of the list.
+
+Train and holdout in both periods. A result that reverses out of sample is not a weak result, it is a dead one. One trend-following idea posted a positive full-sample result at p=0.019 and went negative out of time. The full-sample number was never evidence.
+
+Real bid and ask, net of fees. This is my most common failure by a wide margin. Symmetric mean reversion showed up as real on every pair and every timeframe I tested, and sat entirely underneath the retail spread. Real and tradeable are different claims.
+
+Day and event clustering. Treating correlated observations as independent inflates significance enormously. I now read a very high t-statistic as a warning rather than a confirmation. Two of my cleanest-looking results carried t-statistics above twelve, and both were artifacts of counting the same event many times.
+
+Placebo and outcome shuffling. Shuffle the outcomes and rerun. If the effect survives, it was mechanical rather than predictive. Any metric correlated with price level will produce convincing monotonic bins that pass cross-validation and walk-forward alike.
+
+Point in time, with no look-ahead. Discussed below, because this is where I have been burned worst.
+
+The right population. Evaluate a refinement on the subset the strategy actually trades, not the full candidate set. A filter can look excellent across all candidates and be worthless or reversed on the ten percent you would have acted on.
+
+## A thirty-point effect that was not there
+
+The worst one looked like a large mispricing. It was roughly thirty points, it survived three separate robustness checks, and it was supported by hundreds of millions of contracts. On volume like that you stop asking whether the sample is big enough.
+
+The cause was how I indexed price bars. Bars carry a start timestamp, and reading the closing price off a bar indexed by its start returns a price from up to one full bar in the future of the query time. Every classification built on that field was quietly conditioned on the outcome it was trying to predict.
+
+What killed it was not another statistical test. It was checking one contract by hand against its actual settlement value. The lesson I took is that no amount of aggregate confirmation substitutes for grounding a single case in reality, and that a mispricing too large to be plausible in a liquid market is a claim about your own pipeline before it is a claim about the market.
+
+Point in time now means the latest bar whose end is at or before the query timestamp. It is a one-line definition that took an expensive detour to earn.
+
+## When the filter reads the future
+
+A related case cost less but taught more. I had a selection rule that used a contract's full-life maximum price to decide which candidates to include. It produced a healthy positive edge.
+
+The rule was using data from after the decision point. Contracts that went on to lose were being retroactively excluded from the sample, because their price history revealed them as losers. Strip the look-ahead and the true edge was zero. Not small. Zero.
+
+Look-ahead rarely arrives labelled as look-ahead. It arrives as a reasonable-sounding filter that happens to be computed over the wrong window.
+
+## Writing down what failed
+
+The habit that ties this together is keeping the rejections. Each hypothesis gets an identifier, a mechanism, a verdict, and the code that produced it. Most read "rejected" or "real but uncapturable."
+
+That register does two things. It stops me from re-testing an idea I have already killed, and it keeps the base rate honest. When you only remember the survivors, every new idea feels promising. When the ledger is mostly rejections, you price a fresh result correctly, which is to say sceptically.
+
+A result that has not survived a serious attempt to kill it is not a finding. It is a claim, and it should be labelled as one until somebody has tried.

@@ -1,0 +1,47 @@
+---
+title: "Moving personal demos from Heroku to Vercel"
+excerpt: "A hosting migration looks simple until a broken demo becomes the first thing a prospective client sees. The work was inventory, fit, and verification."
+published: 2026-08-17
+tags:
+  - Web development
+  - Deployment
+  - Operations
+---
+
+Earlier this year I moved my hosted personal sites and demos from Heroku to Vercel. The immediate reason was cost. Heroku's free tier was gone, and the collection of small apps was costing more than eighty dollars a month. After the move, the recurring total was closer to fifteen.
+
+The cost reduction mattered, but it was not the interesting part. The important part was making sure the portfolio still did its job: someone could follow a link, reach a working demo, and decide whether the underlying work was relevant to them.
+
+## Start with an inventory, not a migration command
+
+I began by listing every deployed project and treating each one as a small product. For each app, I needed to know its domain, repository, environment variables, database or external services, and the one path a visitor was most likely to try.
+
+That last item is easy to miss. A deployment can return a 200 response while the route that matters has a missing environment variable, a broken redirect, or a client-side error. For a portfolio demo, that is not a minor defect. It is the first impression.
+
+The inventory also made the scope honest. Some projects were static enough for a simple Vercel deployment. Others depended on a database, a third-party API, or work that needed to happen outside a browser request. Those are different operating models, and they should not be forced into the same deployment shape just because one platform is convenient.
+
+## Match the workload to the platform
+
+Vercel is a good fit for the public web layer of this portfolio: Next.js pages, static assets, preview deployments, and short server-side requests. It makes publishing a small app or a new case study fast.
+
+It is not a replacement for every process. A collector that needs to run on a schedule, a long-lived simulation, or a worker that holds a connection needs a different home. My current setup treats the public site as a presentation layer and keeps scheduled collection work on a small server, with only safe, prepared data flowing back to the browser.
+
+That division is simpler than trying to make one deployment target behave like a website, a job queue, and an always-on service at the same time.
+
+## Treat configuration as part of the app
+
+The application code was only one half of each move. Environment variables, callback URLs, custom domains, and provider settings are all part of the deployed system.
+
+I now treat those settings as a checklist rather than remembered setup work. A migration is incomplete until the production deployment has the required server-side values, browser-facing values are intentionally public, and each provider has the correct production URL configured. This is especially important for authentication, payments, and any integration that redirects a user away from the site and back again.
+
+## Verify the route a real visitor takes
+
+After deployment, I checked the live URLs instead of stopping at a successful build. The useful test was short: open the portfolio, follow a project link, load the demo, and try the primary action.
+
+That process caught issues that would not have appeared in a build log. It also made a later lesson clear. When several demos are presented as proof of work, keeping them working is part of maintaining the portfolio itself. Broken links and stale deployments do not stay isolated from the rest of the site.
+
+## Lower cost is useful when it buys attention back
+
+The migration reduced hosting cost from more than eighty dollars a month to roughly fifteen. More importantly, it replaced a scattered group of deployments with a repeatable way to ship public pages and check that they still work.
+
+That is the version of a migration worth keeping: not a platform swap for its own sake, but a smaller operating burden and a clearer path from an idea to a working link.

@@ -8,7 +8,7 @@ import Footer from "@/components/Footer";
 /**
  * React's <ViewTransition> (enabled by `experimental.viewTransition`
  * in next.config.ts). Next vendors a React build that exports it, but
- * @types/react doesn't know about it yet — hence the cast. Wrapping
+ * @types/react does not know about it yet, hence the cast. Wrapping
  * the route children gives a ~180ms cross-fade between pages;
  * globals.css turns it off under prefers-reduced-motion.
  */
@@ -29,7 +29,7 @@ const newsreader = Newsreader({
   variable: "--font-newsreader",
   subsets: ["latin"],
   style: ["normal", "italic"],
-  weight: "400", // only weight used — static files beat the variable font
+  weight: "400", // only weight used; static files beat the variable font
   display: "optional",
 });
 
@@ -50,11 +50,11 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.vandykeportfolio.com"),
   title: {
-    default: "Andrew Van Dyke — Full-Stack & AI/ML Engineer",
-    template: "%s — Andrew Van Dyke",
+    default: "Andrew VanDyke | Full-Stack & AI/ML Engineer",
+    template: "%s | Andrew VanDyke",
   },
   description:
-    "Senior full-stack + AI/ML engineer building agentic systems and trading infrastructure. Live demos, case studies, and ways to work together.",
+    "Full-stack and AI/ML engineer building agent systems, paper-trading tools, and web apps. Case studies, demos, and ways to work together.",
 };
 
 /**

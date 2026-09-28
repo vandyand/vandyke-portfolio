@@ -10,7 +10,7 @@ export default function Header() {
           href="/"
           className="whitespace-nowrap font-display text-xl tracking-tight text-ink transition-colors hover:text-accent"
         >
-          Andrew Van&thinsp;Dyke
+          Andrew VanDyke
         </Link>
         <nav aria-label="Main" className="flex items-center gap-1 sm:gap-2">
           {nav.map((item) => (
@@ -18,7 +18,11 @@ export default function Header() {
               key={item.href}
               href={item.href}
               className={`rounded-chip px-2.5 py-2 font-mono text-kicker uppercase text-ink-muted transition-colors hover:bg-surface hover:text-ink sm:px-3 ${
-                item.href.startsWith("mailto:") ? "hidden sm:inline-flex" : ""
+                item.href.startsWith("mailto:") ||
+                item.href === "/about" ||
+                item.href === "/projects"
+                  ? "hidden sm:inline-flex"
+                  : ""
               }`}
             >
               {item.label}

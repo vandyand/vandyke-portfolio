@@ -1,6 +1,6 @@
 ---
-title: "Agent World — Emberwick"
-tagline: "Six LLM-powered villagers living in a pixel town — LangGraph decides, AutoGen converses, CrewAI narrates."
+title: "Agent World: Emberwick"
+tagline: "A pixel town where six distinct low-cost LLM villagers think with LangGraph, talk through AutoGen, and leave a CrewAI chronicle."
 year: 2026
 role: "Design, architecture & implementation"
 stack:
@@ -16,13 +16,12 @@ links:
   live: "https://agent-world-three.vercel.app"
   repo: "https://github.com/vandyand/agent-world"
 hero:
-  type: video
-  video: "/heroes/agent-world"
+  type: embed
   poster: "/heroes/agent-world/poster.jpg"
   alt: "Pixel-art town of Emberwick with villagers Isolde and Otto talking at the dock"
-featured: true
-order: 1
-outcome: "Three agent frameworks orchestrated from one Basilisp Polylith monorepo, behind a hard fail-before-spend cost cap — shipped as a zero-backend static replay anyone can watch."
+featured: false
+order: 7
+outcome: "I combined LangGraph, AutoGen, CrewAI, Basilisp Polylith, and OpenRouter in one cost-capped multi-agent system, then shipped an interactive canvas viewer anyone can open."
 keywords:
   - LangGraph multi-agent system
   - AutoGen group chat
@@ -34,16 +33,17 @@ keywords:
 
 ## Problem
 
-"Multi-agent" demos usually mean one framework doing framework tourism — and
-an API bill nobody watched. I wanted a system that uses **LangGraph, AutoGen,
-and CrewAI together**, each doing the one job it's actually shaped for, with
-LLM spend capped *before* the call is made, and an artifact a hiring client
-can open in a browser with zero backend.
+"Multi-agent" demos often use one framework for everything and leave the API
+bill as an afterthought. I wanted to use **LangGraph, AutoGen, and CrewAI**
+together, with each handling a job it suits, a spend cap before requests go
+out, and a browser-based artifact that needs no backend.
 
 ## What I built
 
-Emberwick: six LLM-powered villagers live in a 2D pixel town. Each framework
-owns the seam it was designed for:
+Emberwick is a 2D pixel town with six LLM-powered villagers. Each villager is
+assigned a different low-cost OpenRouter model, so the conversations are real
+exchanges between distinct model-powered personas. The AI framework stack is
+deliberate: LangGraph, AutoGen, and CrewAI each handle the part they fit best.
 
 - **LangGraph** runs per-agent cognition — every decision is a compiled
   `StateGraph` (`perceive → decide → conditional route → set-target / idle`),

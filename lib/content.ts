@@ -14,7 +14,7 @@ const heroSchema = z.object({
   /** Base dir under /public for video heroes, e.g. "/heroes/agent-world"
    *  (expects cover.webm + cover.mp4 inside). */
   video: z.string().optional(),
-  /** Poster/still image. Optional — a project may declare type "poster"
+  /** Poster/still image. Optional: a project may declare type "poster"
    *  before its asset exists (generated in Phase 3); renderers must
    *  fall back gracefully. */
   poster: z.string().optional(),
@@ -52,6 +52,8 @@ export const projectSchema = z.object({
     .default({}),
   hero: heroSchema,
   featured: z.boolean().default(false),
+  /** Draft projects stay in the repository but are not included in public routes. */
+  draft: z.boolean().default(false),
   order: z.number().int().default(99),
   outcome: z.string().min(1),
   keywords: z.array(z.string()).default([]),
@@ -68,6 +70,22 @@ export type Project = ProjectFrontmatter & {
 
 const PROJECTS_DIR = path.join(process.cwd(), "content", "projects");
 
+/**
+ * Keep the published copy aligned with the site's style guide. Project MDX is
+ * also used for metadata and image alt text, so normalize both frontmatter and
+ * the rendered body at the content boundary.
+ */
+function removeEmDashes(value: unknown): unknown {
+  if (typeof value === "string") return value.replaceAll("\u2014", " - ");
+  if (Array.isArray(value)) return value.map(removeEmDashes);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [key, removeEmDashes(entry)]),
+    );
+  }
+  return value;
+}
+
 export function getAllProjects(): Project[] {
   const files = fs
     .readdirSync(PROJECTS_DIR)
@@ -78,16 +96,21 @@ export function getAllProjects(): Project[] {
     const slug = file.replace(/\.mdx$/, "");
     const raw = fs.readFileSync(path.join(PROJECTS_DIR, file), "utf8");
     const { data, content } = matter(raw);
-    const parsed = projectSchema.safeParse({ ...data, slug });
+    const parsed = projectSchema.safeParse({
+      ...(removeEmDashes(data) as Record<string, unknown>),
+      slug,
+    });
     if (!parsed.success) {
       throw new Error(
         `Invalid frontmatter in content/projects/${file}:\n${parsed.error.message}`,
       );
     }
-    return { ...parsed.data, body: content };
+    return { ...parsed.data, body: removeEmDashes(content) as string };
   });
 
-  return projects.sort((a, b) => a.order - b.order || a.slug.localeCompare(b.slug));
+  return projects
+    .filter((project) => !project.draft)
+    .sort((a, b) => a.order - b.order || a.slug.localeCompare(b.slug));
 }
 
 export function getProject(slug: string): Project | undefined {

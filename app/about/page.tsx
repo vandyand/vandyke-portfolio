@@ -5,7 +5,7 @@ import { site, socials, UPWORK_PROFILE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Full-stack and AI/ML engineer with a controls-engineering background — React/TypeScript, Python, Clojure, LLM agent systems, and algorithmic trading.",
+    "Full-stack and AI/ML engineer with a controls-engineering background, working in React/TypeScript, Python, Clojure, LLM agent systems, and algorithmic trading.",
   alternates: { canonical: `${site.url}/about` },
 };
 
@@ -40,34 +40,34 @@ const experience = [
   {
     role: "AI/ML & Full-Stack Contractor",
     org: "Upwork",
-    period: "Jan 2025 — present",
+    period: "Jan 2025 - present",
     link: UPWORK_PROFILE_URL,
     description:
-      "Freelance contractor specializing in AI/ML development, full-stack web applications, and algorithmic trading systems. Building agentic workflows, multi-agent systems, and data-driven applications for clients.",
+      "I work with clients on AI/ML development, full-stack web applications, and algorithmic trading systems, including agent workflows and data-driven applications.",
   },
   {
     role: "Controls Engineer II",
     org: "Extol Inc.",
-    period: "2024 — 2025",
+    period: "2024 - 2025",
     link: "https://www.extolinc.com/",
     description:
-      "Designed and programmed control systems for plastics manufacturing equipment. Developed PLC systems and collaborated with engineers to implement reliable automation solutions for customers.",
+      "Designed and programmed control systems for plastics manufacturing equipment, working with other engineers to deliver reliable automation for customers.",
   },
   {
     role: "Software Engineer",
     org: "TeamGantt",
-    period: "2020 — 2023",
+    period: "2020 - 2023",
     link: "https://www.teamgantt.com/",
     description:
-      "Built and maintained features for a SaaS project management platform using a React/TypeScript frontend and PHP/Laravel backend services. Contributed to the Clojure codebase for data processing, in a fully remote agile team.",
+      "Built and maintained SaaS features with a React/TypeScript frontend and PHP/Laravel services, and contributed to Clojure data-processing work on a fully remote team.",
   },
   {
     role: "Controls Engineer",
     org: "Altron Automation",
-    period: "2016 — 2020",
+    period: "2016 - 2020",
     link: "https://www.altronautomation.com/",
     description:
-      "Designed electrical schematics and programmed PLCs for manufacturing automation systems — routing, adhesive dispensing, and material handling. Integrated robots into production lines alongside mechanical engineers.",
+      "Designed electrical schematics and programmed PLCs for manufacturing automation, including routing, adhesive dispensing, and material handling. I also integrated robots into production lines with mechanical engineers.",
   },
 ] as const;
 
@@ -82,10 +82,10 @@ export default function AboutPage() {
           </h1>
           <div className="mt-8 flex max-w-xl flex-col gap-5 text-lg leading-relaxed text-ink-muted">
             <p>
-              I&rsquo;m Andrew Van Dyke — a full-stack engineer who spent four
-              years wiring up factory automation before moving to software,
-              and it shows: I care about systems that keep working after the
-              demo ends.
+              I&rsquo;m Andrew VanDyke, a full-stack engineer who spent four years
+              wiring factory automation before moving into software. That
+              background still shapes how I work. I like systems that keep
+              working after the demo is over.
             </p>
             <p>
               These days I build{" "}
@@ -96,7 +96,7 @@ export default function AboutPage() {
               <strong className="font-medium text-ink">
                 algorithmic trading infrastructure
               </strong>{" "}
-              (TCN and RL models trading live across four venues), and{" "}
+              (TCN and RL models running as paper-trading systems), and{" "}
               <strong className="font-medium text-ink">
                 production web apps
               </strong>{" "}
@@ -105,16 +105,16 @@ export default function AboutPage() {
               React/Laravel/Clojure stack.
             </p>
             <p>
-              The controls-engineering background is the throughline:
-              instrumentation first, hard limits on the dangerous parts, and
-              honest measurement of whether the thing actually works.
+              The controls background is the common thread. I care about
+              instrumentation, putting limits around the risky parts, and
+              being honest about whether something is actually working.
             </p>
           </div>
         </div>
         <div className="relative aspect-[9/10] w-full max-w-xs overflow-hidden rounded-card border border-line shadow-card md:mt-4">
           <Image
             src="/about/andrew.jpg"
-            alt="Andrew Van Dyke smiling in an autumn forest"
+            alt="Andrew VanDyke smiling in an autumn forest"
             fill
             priority
             sizes="(max-width: 768px) 20rem, 20rem"

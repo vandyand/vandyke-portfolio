@@ -1,6 +1,6 @@
 ---
 title: "Agentic AI Systems"
-tagline: "Three live multi-agent apps built on one idea: agents that pass each other strict, schema-validated JSON instead of prose."
+tagline: "Three multi-agent apps built around structured JSON contracts instead of loose hand-offs."
 year: 2026
 role: "Design & development"
 stack:
@@ -17,8 +17,8 @@ hero:
   poster: "/heroes/multi-agent-research-pipeline/poster.jpg"
   alt: "Multi-agent research pipeline UI showing structured findings and a drafted article"
 featured: true
-order: 5
-outcome: "One showcase, three shipped multi-agent systems — a research pipeline that self-revises, a schema-driven workflow DAG, and a routed wellness chat with shared memory — each demonstrating typed, reliable contracts between LLM agents."
+order: 2
+outcome: "Three small multi-agent systems: a research pipeline that revises itself, a typed workflow DAG, and a wellness chat that routes requests while sharing context."
 keywords:
   - agentic AI
   - multi-agent systems
@@ -31,24 +31,24 @@ keywords:
 demos:
   - key: research
     title: "Multi-Agent Research Pipeline"
-    tagline: "Researcher → Writer → Critic — each hands the next validated JSON, with an automatic revision loop."
+    tagline: "A researcher, writer, and critic pass validated JSON through an automatic revision loop."
     poster: "/heroes/multi-agent-research-pipeline/poster.jpg"
     alt: "Research pipeline UI showing structured findings and a drafted article on walk-forward optimization"
     live: "https://multi-agent-research-pipeline.vercel.app"
     repo: "https://github.com/vandyand/multi-agent-pipeline-next"
     highlights:
-      - "Three agents hand each other schema-validated JSON instead of prose — zero mapping code between them."
+      - "Three agents pass schema-validated JSON instead of prose, so the hand-offs need no mapping code."
       - "The Critic's structured feedback triggers an automatic revision pass before the article is finalized."
       - "Every step is typed and inspectable: watch findings become a draft, get critiqued, and get rewritten."
   - key: wellness
     title: "Multi-Agent Wellness Chatbot"
-    tagline: "A router agent reads each message and hands it to the right specialist — four personas sharing one memory."
+    tagline: "A router reads each message and sends it to the right specialist, with four personas sharing one memory."
     poster: "/posters/wellness-crew-chat.jpg"
     alt: "Wellness Crew chat interface with Coach, Chef, Sage, and Doc characters"
     live: "https://wellness-crew-chat.vercel.app"
     repo: "https://github.com/vandyand/multi-agent-chatbot-next"
     highlights:
-      - "A router agent classifies each message and routes it to Coach, Chef, Sage, or Doc — not brittle keyword matching."
+      - "A router classifies each message and sends it to Coach, Chef, Sage, or Doc without relying on keyword matching."
       - "All four personas share one conversation memory, so Coach can reference what Chef just recommended."
       - "Routing decisions and replies are driven by structured output, so the hand-offs stay reliable."
   - key: workflow
@@ -60,11 +60,11 @@ demos:
     repo: "https://github.com/vandyand/agentic-workflow-engine-next"
     highlights:
       - "Every step declares typed inputs and outputs up front; the runner resolves the DAG by topological order."
-      - "Chains HTTP calls, data transforms, and LLM steps into one graph — with retries on failure."
+      - "Chains HTTP calls, data transforms, and LLM steps into one graph, with retries when a step fails."
       - "Per-node inspection shows exactly what each step received and produced."
 ---
 
-All three of these are multi-agent LLM apps, and they lean on the same trick:
-agents that communicate through **strict JSON-schema contracts** rather than
-free-form prose. That is what makes them reliable enough to chain, route, and
-revise without a tangle of glue code. Each one is live — switch between them below.
+All three are multi-agent LLM apps built around the same idea: agents communicate
+through **strict JSON-schema contracts** instead of free-form prose. That keeps
+the hand-offs easier to chain, route, and revise. You can switch between the
+running demos below.

@@ -84,7 +84,7 @@ export const mdxComponents: MDXComponents = {
     />
   ),
   img: ({ src, alt }) => (
-    // Support images inside MDX bodies — plain rendering, full width.
+    // Support images inside MDX bodies with plain, full-width rendering.
     <Image
       src={typeof src === "string" ? src : ""}
       alt={alt ?? ""}
