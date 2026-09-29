@@ -8,32 +8,36 @@ tags:
   - Data engineering
 ---
 
-A dashboard can look live while quietly showing an old snapshot. It can also put several account types on one screen and make them appear equivalent when they are not. Both mistakes make the interface less useful precisely when someone needs it most.
+I run a few trading systems, and I built a small website to keep track of how they're doing. It's a performance dashboard at avd-trading-dashboard.vercel.app, and it shows each trading account's value over time, its daily gains and losses, the positions it currently holds, and a few standard risk numbers like the largest drop from a previous high. I use it to check on the systems, and it also doubles as a portfolio demo, so other people look at it too.
 
-While rebuilding my trading dashboard, I treated the data contract as the main feature. The visual layer came after the questions behind each number had clear answers: where did it come from, when was it collected, and what kind of result does it represent?
+The dashboard follows three accounts at three different companies, and they aren't all the same kind of account.
 
-## Start with the account label
+- Alpaca is a stock brokerage. My Alpaca account is a paper account, which means it trades with simulated money against real market prices.
+- OANDA is a currency (forex) broker, where you trade one currency against another, like euros against US dollars. My OANDA account is a demo account, which is OANDA's name for the same kind of simulated money.
+- Kalshi is a regulated exchange for event contracts, which are yes-or-no questions about the future that pay out $1 if the answer is yes and nothing if it's no. My Kalshi account is live and uses real money.
 
-The dashboard follows Alpaca paper equities, OANDA practice forex, and a live Kalshi prediction-market account. They belong in the same workspace because I use the same system to inspect them. They should not be described as the same thing.
+Most of the work on this project turned out to be making sure each page is clear about which kind of account it's showing and what its numbers actually measure. The charts themselves were the easy part.
 
-Each account now carries its actual mode in the interface. That is a small copy decision with a big effect: a paper result is a test result, while a live account includes the consequences of real fills and real capital. Neither label is a forecast or an endorsement.
+## Keeping simulated and real money apart
 
-## Use the right history for the instrument
+When several accounts sit side by side in the same design, it's easy for a visitor to assume they're equally meaningful, but a simulated result and a real-money result don't tell you the same thing. A paper account never has to find a real buyer or seller, so its orders fill at prices the broker simulates, and those tend to be kinder than what you'd get with real money in the real market. A paper result is a useful test, but it doesn't carry the same weight as a result where real money changed hands.
 
-For Alpaca and OANDA, a periodic account-value snapshot is useful. Positions can stay open for a while, so a fifteen-minute net asset value series shows the shape of the account between trades.
+So I made the account type part of the page itself. The Alpaca and OANDA pages both say "Broker-sourced paper trading track record" under the title, and they name the account, for example "Paper account" for Alpaca and "OANDA demo account" for OANDA. The Kalshi page says "Broker-sourced live-account performance" and "Live real-money account." Nobody should have to go digging to find out whether the money was real.
 
-Kalshi needs a different view. A contract usually resolves quickly, and an open contract is not a completed result. Its primary history is therefore built from closed contracts, ordered by settlement. The page can still show cash and current position value as a present-tense account snapshot, but it does not mix those values into the realized-result chart.
+## Why the Kalshi chart only counts finished contracts
 
-That distinction also explains why a trade-based graph and a time-based graph answer different questions. One shows the sequence of settled outcomes. The other shows when those outcomes happened. Neither is better in isolation.
+Kalshi needed a different kind of chart, and it comes down to how event contracts work. You buy a contract for somewhere between one cent and 99 cents, and when the question is decided (Kalshi calls this settling) the contract pays either $1 or nothing. Kalshi lists contracts on all sorts of things, and plenty of them run for weeks or months. The ones I trade are short ones about the price of Bitcoin that settle every fifteen minutes.
 
-## Collect often, publish safely
+Before a contract settles, its price is really just the market's current guess, and that guess can swing all the way to $1 or all the way to zero within minutes. If I counted open contracts at their current price, the performance chart would show gains and losses that often vanish a few minutes later. So on the Kalshi page the performance chart only moves when a contract settles and the result is final. The page still shows my current cash and any open contracts, but separately, as a picture of the account right now. The footnote on that page says it plainly: "The performance curve only changes when a contract settles. Current cash and open contracts are context, not performance history."
 
-The collector runs away from the browser and fetches broker data on a schedule. It writes a small, sanitized data artifact for the public dashboard, then the website reads that artifact instead of reaching for broker credentials.
+Stocks and currencies work differently. A position can stay open for days, and brokers report the account's total value at any moment (cash plus what the open positions are currently worth). For Alpaca and OANDA the chart follows that total value as the brokers report it, because it's the standard way to measure those accounts and it shows what happened between trades.
 
-This keeps account secrets out of the client and gives the interface one source of truth. A visible freshness timestamp matters as much as the line chart. If the collector fails, the dashboard should say the data is stale instead of pretending otherwise.
+## Getting the numbers onto the page
 
-## The chart is the last step
+A small program on my home server asks each broker for its account data every five minutes. It works out the charts and statistics and publishes them to the website as plain data files, and the website just reads those files. The brokers' login keys stay on my server and never go anywhere near the public site, so a visitor can look at the numbers but nothing on the website can place a trade or see anything beyond what I chose to publish.
 
-Once the account mode, valuation method, and collection cadence are explicit, sorting a positions chart from winners to losers becomes a useful choice instead of a cosmetic one. The user can see what is working, what is not, and what the chart is actually measuring.
+## What I'd tell someone building one
 
-That is the standard I want for any operational dashboard: the shortest path from a visual number to an honest explanation of how it was made.
+If you're building a dashboard like this, I'd suggest deciding what each number means before you design how it looks, and then writing that meaning on the page where people will actually see it. For me that meant labeling every account as paper or live money, only charting Kalshi results once they were final, and keeping the account keys off the public site.
+
+You can see the dashboard at avd-trading-dashboard.vercel.app, and the Kalshi page in particular shows the settled-contracts-only chart described above.
