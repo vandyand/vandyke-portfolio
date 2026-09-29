@@ -8,40 +8,38 @@ tags:
   - Operations
 ---
 
-Earlier this year I moved my hosted personal sites and demos from Heroku to Vercel. The immediate reason was cost. Heroku's free tier was gone, and the collection of small apps was costing more than eighty dollars a month. After the move, the recurring total was closer to fifteen.
+Earlier this year I moved my personal sites and demos from Heroku to Vercel. Both are services that host web apps for you, so you don't have to run your own servers. The main reason for the move was cost. Heroku had dropped its free tier, and my collection of small apps was costing me more than eighty dollars a month. After the move it came to about fifteen.
 
-The cost reduction mattered, but it was not the interesting part. The important part was making sure the portfolio still did its job: someone could follow a link, reach a working demo, and decide whether the underlying work was relevant to them.
+The savings were nice, but what I cared about most was that my portfolio kept working. The whole point of these demos is that someone can click a link, land on a working app, and decide whether my work is relevant to what they need. So I wanted to make sure every one of those links still worked after the move.
 
-## Start with an inventory, not a migration command
+## Making a list first
 
-I began by listing every deployed project and treating each one as a small product. For each app, I needed to know its domain, repository, environment variables, database or external services, and the one path a visitor was most likely to try.
+Before moving anything, I made a list of every project I had deployed. For each one I wrote down its web address, where its code lives, the settings and passwords it needs to run, any database or outside service it depends on, and the page a visitor is most likely to try first.
 
-That last item is easy to miss. A deployment can return a 200 response while the route that matters has a missing environment variable, a broken redirect, or a client-side error. For a portfolio demo, that is not a minor defect. It is the first impression.
+That last one turned out to matter the most. A site can look like it's up while the page people actually use is broken, for example because a setting didn't get copied over or a redirect points somewhere that no longer exists. Since these demos are often the first thing a potential client sees of my work, I wanted to catch that kind of problem before they did.
 
-The inventory also made the scope honest. Some projects were static enough for a simple Vercel deployment. Others depended on a database, a third-party API, or work that needed to happen outside a browser request. Those are different operating models, and they should not be forced into the same deployment shape just because one platform is convenient.
+The list also showed me that not every project belonged in the same place. Some were simple enough to move straight to Vercel. Others needed a database, relied on an outside service, or had work that needed to keep running in the background, and those needed a bit more thought.
 
-## Match the workload to the platform
+## Putting each piece in the right place
 
-Vercel is a good fit for the public web layer of this portfolio: Next.js pages, static assets, preview deployments, and short server-side requests. It makes publishing a small app or a new case study fast.
+Vercel works really well for the public part of my portfolio, which is the web pages themselves plus small bits of server code that run when someone loads a page. It makes putting up a new demo or a new write-up fast.
 
-It is not a replacement for every process. A collector that needs to run on a schedule, a long-lived simulation, or a worker that holds a connection needs a different home. My current setup treats the public site as a presentation layer and keeps scheduled collection work on a small server, with only safe, prepared data flowing back to the browser.
+It isn't a good fit for everything though. Anything that needs to run on a schedule, keep running for a long time, or hold a connection open needs a different home. So now the public sites live on Vercel, and the scheduled work (like the program that collects numbers for my trading dashboard) runs on a small server at home. Only the finished, safe-to-share data gets sent over to the website.
 
-That division is simpler than trying to make one deployment target behave like a website, a job queue, and an always-on service at the same time.
+Splitting it up that way has been a lot simpler than trying to make one hosting service do all of it.
 
-## Treat configuration as part of the app
+## Moving the settings along with the code
 
-The application code was only one half of each move. Environment variables, callback URLs, custom domains, and provider settings are all part of the deployed system.
+The code was only part of each move. Each app also depends on settings that live outside the code, like passwords for outside services, custom domain names, and the addresses those services send people back to after they log in or pay.
 
-I now treat those settings as a checklist rather than remembered setup work. A migration is incomplete until the production deployment has the required server-side values, browser-facing values are intentionally public, and each provider has the correct production URL configured. This is especially important for authentication, payments, and any integration that redirects a user away from the site and back again.
+I learned to treat those settings as a checklist instead of trying to remember them. For each app I checked that the live version had every setting it needed, that nothing secret was exposed to visitors' browsers, and that each outside service knew the app's new address. That last part matters most for logins and payments, because those send the visitor off to another site and back again, and a stale address breaks that round trip.
 
-## Verify the route a real visitor takes
+## Clicking through it like a visitor would
 
-After deployment, I checked the live URLs instead of stopping at a successful build. The useful test was short: open the portfolio, follow a project link, load the demo, and try the primary action.
+Once each app was deployed, I checked the live links myself instead of trusting that the build finished without errors. The check was simple. I opened my portfolio, clicked through to each project, loaded the demo, and tried the main thing it's supposed to do.
 
-That process caught issues that would not have appeared in a build log. It also made a later lesson clear. When several demos are presented as proof of work, keeping them working is part of maintaining the portfolio itself. Broken links and stale deployments do not stay isolated from the rest of the site.
+That caught a few problems that never showed up in the build logs. It also made me realize that keeping the demos working is part of keeping my portfolio up, since a broken demo reflects on the whole site and not just that one project.
 
-## Lower cost is useful when it buys attention back
+## Where it ended up
 
-The migration reduced hosting cost from more than eighty dollars a month to roughly fifteen. More importantly, it replaced a scattered group of deployments with a repeatable way to ship public pages and check that they still work.
-
-That is the version of a migration worth keeping: not a platform swap for its own sake, but a smaller operating burden and a clearer path from an idea to a working link.
+My hosting bill went from more than eighty dollars a month to about fifteen. I also ended up with one consistent way to put new pages online and a quick routine for checking that everything still works, which has made it a lot easier to keep adding new projects.
