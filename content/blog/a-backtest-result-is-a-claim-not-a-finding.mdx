@@ -8,54 +8,52 @@ tags:
   - Statistics
 ---
 
-A strategy that loses money in a backtest is cheap. You see the number, you drop the idea, you move on. The costly result is the one that looks right. It survives the checks you thought to run, it lines up with a story you find plausible, and it stays alive long enough that you start building on top of it.
+I've been building trading systems for about a decade now, and a lot of that time goes into researching trading strategies. A strategy here just means a set of rules for when to buy and when to sell, like "buy when the price has dropped three days in a row." Before I trust a strategy with money, I test it on historical data, which means running its rules over past prices to see whether it would have made money. That test is called a backtest.
 
-I keep a ledger of every hypothesis I have tested, each with a verdict: tradeable, real but uncapturable, or rejected. Most entries are rejections. The rejections are the point. What follows is the set of checks that produced them, and two findings that passed almost all of those checks before dying.
+A strategy that loses money in a backtest doesn't cost me much. I see that it lost, I drop the idea, and I move on to the next one. The ones that cost me are the strategies that look like they work but don't. Those make it through the checks I thought to run, they come with a story that sounds believable, and they stick around long enough that I start building more work on top of them before I find out they were never real.
 
-## The failure mode is confirmation, not error
+I keep a running list of every idea I've tested, and each one gets a verdict. It's either tradeable, real but not profitable once trading costs are included, or rejected. Most of them end up rejected. What follows are the checks that did most of that rejecting, and two ideas that got past nearly all of them before I found the problem.
 
-Arithmetic mistakes announce themselves. The dangerous case is a pipeline that is working exactly as written and answering a subtly different question than the one you asked. The output is internally consistent, so nothing looks broken, and every robustness check you run inherits the same flaw.
+## Why a result that looks good is the dangerous one
 
-That means robustness cannot be additive. Running five variants of the same test tells you the result is stable under those five variants, not that it is real.
+A bug that crashes the program or produces obviously wrong numbers is easy to catch, because you can see it's broken. The harder problem is code that does exactly what I told it to do, but where what I told it to do answers a slightly different question than the one I meant to ask. Everything it produces is consistent, so nothing looks wrong.
 
-## The gate
+The tricky part is that extra checks don't necessarily help with this. If every check I run is built on the same flawed data, every check inherits the same flaw, so running five versions of a test only tells me the result holds up across those five versions. It doesn't tell me the result is real.
 
-Every hypothesis clears all of these before it earns a dollar. Each rule exists because a specific mistake got past a weaker version of the list.
+## The checks every idea has to pass
 
-Train and holdout in both periods. A result that reverses out of sample is not a weak result, it is a dead one. One trend-following idea posted a positive full-sample result at p=0.019 and went negative out of time. The full-sample number was never evidence.
+Each of these is on the list because a specific mistake once got past me without it.
 
-Real bid and ask, net of fees. This is my most common failure by a wide margin. Symmetric mean reversion showed up as real on every pair and every timeframe I tested, and sat entirely underneath the retail spread. Real and tradeable are different claims.
+**Test on data the idea has never seen.** I split the history into an earlier part where I develop the idea and a later part that I hold back until the end. A result that reverses on the held-back part is dead. One trend-following idea (the idea that prices that have been rising tend to keep rising) looked good over the full history and then lost money on the held-back period, which meant the full-history result had never been evidence of anything.
 
-Day and event clustering. Treating correlated observations as independent inflates significance enormously. I now read a very high t-statistic as a warning rather than a confirmation. Two of my cleanest-looking results carried t-statistics above twelve, and both were artifacts of counting the same event many times.
+**Include the real cost of trading.** When you buy, you pay a slightly higher price than when you sell at the same moment, and that gap is called the spread. Add fees on top of that. This is the check that rejects my ideas most often. A mean reversion idea (betting that a price snaps back after it moves) showed up as real in every market and timeframe I tested, and in every one of them the effect was smaller than the spread. So it was real, but there was no way to actually make money from it.
 
-Placebo and outcome shuffling. Shuffle the outcomes and rerun. If the effect survives, it was mechanical rather than predictive. Any metric correlated with price level will produce convincing monotonic bins that pass cross-validation and walk-forward alike.
+**Don't count the same event many times.** If one big news day produces hundreds of data points, those points aren't independent, they're really one event. Counting them separately makes a result look far more certain than it is. Two of my cleanest-looking results turned out to be exactly this, the same few events counted over and over. These days, when a result looks almost too certain, I treat that as a warning sign.
 
-Point in time, with no look-ahead. Discussed below, because this is where I have been burned worst.
+**Shuffle the outcomes and run it again.** I scramble which outcome goes with which piece of data and rerun the test. If the effect is still there after shuffling, it came from how I set up the test and not from any real ability to predict. Measurements that mostly just track how high a price is can produce very convincing patterns this way.
 
-The right population. Evaluate a refinement on the subset the strategy actually trades, not the full candidate set. A filter can look excellent across all candidates and be worthless or reversed on the ten percent you would have acted on.
+**Only use information that would have been available at the time.** Using information from after the moment of the decision is called look-ahead, and it's where I've been burned the worst. Both stories below are about it.
 
-## A thirty-point effect that was not there
+**Test on the trades I'd actually take.** An improvement to a strategy has to be checked on the small set of trades the strategy would really make, and not just on every possible candidate. A filter can look excellent across all the candidates and turn out to be useless, or even backwards, on the ten percent I would have acted on.
 
-The worst one looked like a large mispricing. It was roughly thirty points, it survived three separate robustness checks, and it was supported by hundreds of millions of contracts. On volume like that you stop asking whether the sample is big enough.
+## A thirty-cent gap that wasn't there
 
-The cause was how I indexed price bars. Bars carry a start timestamp, and reading the closing price off a bar indexed by its start returns a price from up to one full bar in the future of the query time. Every classification built on that field was quietly conditioned on the outcome it was trying to predict.
+I trade hourly crypto contracts on Kalshi, which is an exchange where each contract asks a yes-or-no question and settles at either zero or a dollar. At one point during research I found what looked like a thirty-cent gap between what the market was charging for these contracts and what they actually paid out. On contracts that max out at a dollar, that would be enormous.
 
-What killed it was not another statistical test. It was checking one contract by hand against its actual settlement value. The lesson I took is that no amount of aggregate confirmation substitutes for grounding a single case in reality, and that a mispricing too large to be plausible in a liquid market is a claim about your own pipeline before it is a claim about the market.
+However, upon closer inspection I found the problem was in how my code looked up prices. Price history usually comes grouped into bars, where each bar covers a stretch of time (say one minute) and records the price at the start, the high, the low, and the price at the end. Each bar is labeled with its start time. My code asked for the price at a given minute, but it was reading the end-of-bar price from the bar labeled with that minute, which is really the price from up to a minute later. So the answer I was trying to predict was already sitting in the data I was predicting from.
 
-Point in time now means the latest bar whose end is at or before the query timestamp. It is a one-line definition that took an expensive detour to earn.
+The issue wasn't caught by a statistical test. It was caught by manually inspecting the data for a single contract and comparing it with what actually happened. My rule now is that the price "at" a moment comes from the latest bar that had already finished by that moment. It's a one-line rule, but it took an expensive detour to learn it.
 
-## When the filter reads the future
+## A filter that peeked at the future
 
-A related case cost less but taught more. I had a selection rule that used a contract's full-life maximum price to decide which candidates to include. It produced a healthy positive edge.
+A related mistake cost less, but I learned more from it. I had a rule for picking which contracts to include, and it used each contract's highest price over its entire life to make that choice. It produced a healthy-looking profit.
 
-The rule was using data from after the decision point. Contracts that went on to lose were being retroactively excluded from the sample, because their price history revealed them as losers. Strip the look-ahead and the true edge was zero. Not small. Zero.
+The problem was that a contract's highest price over its whole life isn't known until the contract is over. The rule was quietly using the future. Contracts that went on to lose tended to have price histories that gave them away, so they were being dropped from the sample after the fact. Once I removed the peek into the future, the profit went to zero.
 
-Look-ahead rarely arrives labelled as look-ahead. It arrives as a reasonable-sounding filter that happens to be computed over the wrong window.
+Look-ahead rarely announces itself. It usually shows up as a filter that sounds perfectly reasonable but happens to be calculated over the wrong window of time.
 
-## Writing down what failed
+## Keeping a list of what failed
 
-The habit that ties this together is keeping the rejections. Each hypothesis gets an identifier, a mechanism, a verdict, and the code that produced it. Most read "rejected" or "real but uncapturable."
+The habit that ties all of this together is keeping the rejections. Every idea gets a name, a short explanation of why it might work, a verdict, and the code that produced the verdict. Most of the entries say "rejected" or "real but not profitable."
 
-That register does two things. It stops me from re-testing an idea I have already killed, and it keeps the base rate honest. When you only remember the survivors, every new idea feels promising. When the ledger is mostly rejections, you price a fresh result correctly, which is to say sceptically.
-
-A result that has not survived a serious attempt to kill it is not a finding. It is a claim, and it should be labelled as one until somebody has tried.
+That list helps me in two ways. It stops me from re-testing ideas I've already ruled out, and it keeps my expectations realistic. If I only remembered the ideas that worked, every new idea would feel promising. Because the list is mostly failures, I've learned to be skeptical of a good new result until it has made it through every one of the checks above.
