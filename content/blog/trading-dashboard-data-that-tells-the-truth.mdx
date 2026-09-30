@@ -1,6 +1,6 @@
 ---
-title: "A trading dashboard should tell the truth about its data"
-excerpt: "The hard part of a performance dashboard is not drawing a chart. It is making the chart mean exactly what the label says."
+title: "What I learned building my trading performance dashboard"
+excerpt: "My trading dashboard shows simulated and real-money accounts side by side. Most of the work was making each page clear about which is which and what its numbers measure."
 published: 2026-08-17
 tags:
   - System design
@@ -26,7 +26,7 @@ So I made the account type part of the page itself. The Alpaca and OANDA pages b
 
 ## Why the Kalshi chart only counts finished contracts
 
-Kalshi needed a different kind of chart, and it comes down to how event contracts work. You buy a contract for somewhere between one cent and 99 cents, and when the question is decided (Kalshi calls this settling) the contract pays either $1 or nothing. Kalshi lists contracts on all sorts of things, and plenty of them run for weeks or months. The ones I trade are short ones about the price of Bitcoin that settle every fifteen minutes.
+Kalshi needed a different kind of chart, and it comes down to how event contracts work. You buy a contract for somewhere between one cent and 99 cents, and when the question is decided (Kalshi calls this settling) the contract pays either $1 or nothing. Kalshi lists contracts on all sorts of things, and plenty of them run for weeks or months. Kalshi has cryptocurrency contracts that expire every fifteen minutes, every hour and every day, and the ones this account trades are the fifteen-minute Bitcoin contracts.
 
 Before a contract settles, its price is really just the market's current guess, and that guess can swing all the way to $1 or all the way to zero within minutes. If I counted open contracts at their current price, the performance chart would show gains and losses that often vanish a few minutes later. So on the Kalshi page the performance chart only moves when a contract settles and the result is final. The page still shows my current cash and any open contracts, but separately, as a picture of the account right now. The footnote on that page says it plainly: "The performance curve only changes when a contract settles. Current cash and open contracts are context, not performance history."
 

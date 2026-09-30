@@ -1,6 +1,6 @@
 ---
-title: "A backtest result is a claim, not a finding"
-excerpt: "The expensive mistakes in my trading research were never bad ideas. They were good-looking numbers that passed every check I had, until I added the one that killed them."
+title: "How I test trading ideas before trusting them"
+excerpt: "The trading ideas that cost me the most were the ones that looked like they worked. Here are the checks I now run on every idea, and two that nearly got through."
 published: 2026-08-17
 tags:
   - Research methodology
@@ -38,7 +38,7 @@ Each of these is on the list because a specific mistake once got past me without
 
 ## A thirty-cent gap that wasn't there
 
-I trade hourly crypto contracts on Kalshi, which is an exchange where each contract asks a yes-or-no question and settles at either zero or a dollar. At one point during research I found what looked like a thirty-cent gap between what the market was charging for these contracts and what they actually paid out. On contracts that max out at a dollar, that would be enormous.
+Kalshi is an exchange where each contract asks a yes-or-no question and settles at either zero or a dollar, and it has cryptocurrency contracts that expire every fifteen minutes, every hour and every day. This research was on the hourly ones. At one point during research I found what looked like a thirty-cent gap between what the market was charging for these contracts and what they actually paid out. On contracts that max out at a dollar, that would be enormous.
 
 However, upon closer inspection I found the problem was in how my code looked up prices. Price history usually comes grouped into bars, where each bar covers a stretch of time (say one minute) and records the price at the start, the high, the low, and the price at the end. Each bar is labeled with its start time. My code asked for the price at a given minute, but it was reading the end-of-bar price from the bar labeled with that minute, which is really the price from up to a minute later. So the answer I was trying to predict was already sitting in the data I was predicting from.
 
